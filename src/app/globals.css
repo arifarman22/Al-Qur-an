@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #059669;
+  --color-primary-light: #d1fae5;
+  --color-primary-dark: #065f46;
+  --color-accent: #ca8a04;
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-border: var(--border-color);
+  --color-muted: var(--muted-color);
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-arabic: "Amiri", serif;
+}
+
+/* ─── Light Mode ─── */
+:root {
+  --bg: #ffffff;
+  --fg: #111827;
+  --surface: #ffffff;
+  --surface-alt: #f9fafb;
+  --border-color: #e5e7eb;
+  --muted-color: #6b7280;
+  color-scheme: light;
+}
+
+/* ─── Dark Mode ─── */
+.dark {
+  --bg: #0b1120;
+  --fg: #e2e8f0;
+  --surface: #1a2332;
+  --surface-alt: #0f1829;
+  --border-color: #2a3a4e;
+  --muted-color: #8b9cb8;
+  color-scheme: dark;
+}
+
+/* ─── Base ─── */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground;
+  }
+
+  /* Links */
+  a {
+    @apply transition-colors;
+  }
+
+  /* Inputs & Selects */
+  input, textarea, select {
+    @apply bg-surface-alt text-foreground placeholder:text-muted/50;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .dark input,
+  .dark textarea,
+  .dark select {
+    @apply bg-[#0f1829] text-[#e2e8f0] border-[#2a3a4e];
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: #5a6b82;
+  }
+
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    border-color: #059669;
+    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15);
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+
+  .dark ::selection {
+    background: rgba(5, 150, 105, 0.3);
+  }
+
+  /* Images */
+  img {
+    @apply transition-opacity;
+  }
+
+  .dark img {
+    opacity: 0.92;
+  }
+}
+
+/* ─── Utilities ─── */
+@layer utilities {
+  .card {
+    @apply bg-surface border border-border rounded-xl;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .dark .card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  .card:hover {
+    @apply border-primary/30;
+  }
+
+  .dark .card:hover {
+    border-color: rgba(5, 150, 105, 0.4);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.08);
+  }
+
+  /* Line clamp for surah history */
+  .line-clamp-6 {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/20 rounded-full;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(5, 150, 105, 0.3);
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/40;
+}
+
+/* ─── Dark mode specific overrides ─── */
+
+/* Navbar backdrop */
+.dark header {
+  background: rgba(11, 17, 32, 0.85);
+  backdrop-filter: blur(12px);
+}
+
+/* Settings drawer */
+.dark .fixed .bg-black\/30 {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Buttons */
+.dark button {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Primary button hover in dark */
+.dark .bg-primary:hover {
+  background-color: #047857;
+}
+
+/* Badge / tag styles */
+.dark .bg-primary\/10 {
+  background: rgba(5, 150, 105, 0.15);
+}
+
+/* Audio player bar */
+.dark .fixed.bottom-0 {
+  background: rgba(11, 17, 32, 0.95);
+  backdrop-filter: blur(12px);
+}
+
+/* Range inputs */
+input[type="range"] {
+  @apply appearance-none bg-border rounded-full cursor-pointer;
+  height: 4px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  @apply appearance-none w-3.5 h-3.5 bg-primary rounded-full cursor-pointer;
+  margin-top: -5px;
+  transition: transform 0.1s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+.dark input[type="range"] {
+  background: #2a3a4e;
+}
+
+/* Prose (surah history HTML content) */
+.prose {
+  @apply text-muted;
+}
+.prose h2, .prose h3 {
+  @apply text-foreground font-semibold mt-4 mb-2;
+}
+.prose p {
+  @apply mb-3;
+}
+.prose a {
+  @apply text-primary underline;
+}
+.dark .prose {
+  color: #8b9cb8;
+}
+.dark .prose h2,
+.dark .prose h3 {
+  color: #e2e8f0;
+}
+
+/* Skeleton pulse in dark */
+.dark .animate-pulse {
+  background: linear-gradient(90deg, #1a2332 25%, #243044 50%, #1a2332 75%);
+  background-size: 200% 100%;
+  animation: pulse-dark 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dark {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Toast overrides for dark */
+.dark [data-sonner-toaster] {
+  --normal-bg: #1a2332;
+  --normal-border: #2a3a4e;
+  --normal-text: #e2e8f0;
+}
+
+/* Smooth theme transition */
+html {
+  transition: background-color 0.3s ease;
+}
+html.dark {
+  background: #0b1120;
+}

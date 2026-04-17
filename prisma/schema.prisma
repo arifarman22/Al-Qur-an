@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  password  String
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  bookmarks Bookmark[]
+  progress  ReadingProgress?
+
+  @@map("users")
+}
+
+model Bookmark {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  verseKey   String   @map("verse_key")
+  surahId    Int      @map("surah_id")
+  surahName  String   @map("surah_name")
+  ayahNumber Int      @map("ayah_number")
+  note       String   @default("") @db.Text
+  createdAt  DateTime @default(now()) @map("created_at")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, verseKey])
+  @@index([userId])
+  @@map("bookmarks")
+}
+
+model ReadingProgress {
+  id         String   @id @default(cuid())
+  userId     String   @unique @map("user_id")
+  surahId    Int      @map("surah_id")
+  surahName  String   @map("surah_name")
+  ayahNumber Int      @map("ayah_number")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reading_progress")
+}
