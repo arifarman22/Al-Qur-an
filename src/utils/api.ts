@@ -177,3 +177,36 @@ export interface DailyAyahDTO {
 export async function apiGetDailyAyah() {
   return request<DailyAyahDTO>("/daily-ayah");
 }
+
+// Learning
+export interface LearningProgressDTO {
+  id: string;
+  lessonId: string;
+  completed: boolean;
+  completedAt: string | null;
+}
+
+export async function apiGetLearningProgress() {
+  return request<LearningProgressDTO[]>("/learn");
+}
+
+export async function apiCompleteLesson(lessonId: string) {
+  return request<LearningProgressDTO>("/learn", { method: "POST", body: JSON.stringify({ lessonId }) });
+}
+
+// Memorization
+export interface MemorizationDTO {
+  id: string;
+  surahId: number;
+  surahName: string;
+  status: "not_started" | "in_progress" | "memorized";
+  updatedAt: string;
+}
+
+export async function apiGetMemorization() {
+  return request<MemorizationDTO[]>("/memorize");
+}
+
+export async function apiUpdateMemorization(surahId: number, surahName: string, status: string) {
+  return request<MemorizationDTO>("/memorize", { method: "POST", body: JSON.stringify({ surahId, surahName, status }) });
+}

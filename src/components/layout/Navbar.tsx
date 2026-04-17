@@ -11,10 +11,9 @@ import Container from "@/components/ui/Container";
 
 const navItems = [
   { name: "Surahs", href: "/", icon: BookOpen },
+  { name: "Learn", href: "/learn", icon: BookOpen },
   { name: "Search", href: "/search", icon: Search },
   { name: "Bookmarks", href: "/bookmarks", icon: Bookmark },
-  { name: "Duas", href: "/duas", icon: BookOpen },
-  { name: "Tasbih", href: "/tasbih", icon: BookOpen },
 ];
 
 export default function Navbar() {

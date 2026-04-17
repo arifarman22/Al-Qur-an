@@ -116,6 +116,12 @@ export default function HomePage() {
 
         {/* Quick Links */}
         <div className="flex gap-2 mb-8 overflow-x-auto pb-1">
+          <Link href="/learn" className="card px-4 py-2.5 flex items-center gap-2 text-sm font-medium whitespace-nowrap hover:border-primary/30 transition-colors">
+            📚 Learn Quran
+          </Link>
+          <Link href="/memorize" className="card px-4 py-2.5 flex items-center gap-2 text-sm font-medium whitespace-nowrap hover:border-primary/30 transition-colors">
+            🧠 Memorize
+          </Link>
           <Link href="/tasbih" className="card px-4 py-2.5 flex items-center gap-2 text-sm font-medium whitespace-nowrap hover:border-primary/30 transition-colors">
             📿 Tasbih
           </Link>

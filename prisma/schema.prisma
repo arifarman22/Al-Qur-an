@@ -8,14 +8,16 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  name      String
-  email     String     @unique
-  password  String
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-  bookmarks Bookmark[]
-  progress  ReadingProgress?
+  id           String                 @id @default(cuid())
+  name         String
+  email        String                 @unique
+  password     String
+  createdAt    DateTime               @default(now()) @map("created_at")
+  updatedAt    DateTime               @updatedAt @map("updated_at")
+  bookmarks    Bookmark[]
+  progress     ReadingProgress?
+  lessons      LearningProgress[]
+  memorization MemorizationProgress[]
 
   @@map("users")
 }
@@ -46,4 +48,31 @@ model ReadingProgress {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("reading_progress")
+}
+
+model LearningProgress {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  lessonId    String    @map("lesson_id")
+  completed   Boolean   @default(false)
+  completedAt DateTime? @map("completed_at")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@map("learning_progress")
+}
+
+model MemorizationProgress {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  surahId   Int      @map("surah_id")
+  surahName String   @map("surah_name")
+  status    String   @default("not_started")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, surahId])
+  @@index([userId])
+  @@map("memorization_progress")
 }
