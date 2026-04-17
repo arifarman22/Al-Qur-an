@@ -4,21 +4,29 @@ import { useEffect, useState } from "react";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import GlobalAudioPlayer from "@/components/audio/AudioPlayer";
+import SplashScreen from "@/components/layout/SplashScreen";
 
 export default function QuranProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useSettingsStore();
   const checkAuth = useAuthStore((s) => s.checkAuth);
-  const [mounted, setMounted] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [splashDone, setSplashDone] = useState(false);
 
   useEffect(() => {
-    checkAuth().finally(() => setMounted(true));
+    checkAuth().finally(() => setReady(true));
   }, [checkAuth]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
 
-  if (!mounted) return <div className="min-h-screen bg-background" />;
+  // Show splash for at least 1.8s, then wait for auth
+  useEffect(() => {
+    const timer = setTimeout(() => setSplashDone(true), 1800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!ready || !splashDone) return <SplashScreen />;
 
   return (
     <>
