@@ -5,6 +5,8 @@ import { useSettingsStore } from "@/store/useSettingsStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import GlobalAudioPlayer from "@/components/audio/AudioPlayer";
 import SplashScreen from "@/components/layout/SplashScreen";
+import PageTransition from "@/components/ui/PageTransition";
+import ScrollToTop from "@/components/ui/ScrollToTop";
 
 export default function QuranProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useSettingsStore();
@@ -20,7 +22,6 @@ export default function QuranProvider({ children }: { children: React.ReactNode 
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
 
-  // Show splash for at least 1.8s, then wait for auth
   useEffect(() => {
     const timer = setTimeout(() => setSplashDone(true), 1800);
     return () => clearTimeout(timer);
@@ -30,8 +31,9 @@ export default function QuranProvider({ children }: { children: React.ReactNode 
 
   return (
     <>
-      {children}
+      <PageTransition>{children}</PageTransition>
       <GlobalAudioPlayer />
+      <ScrollToTop />
     </>
   );
 }
