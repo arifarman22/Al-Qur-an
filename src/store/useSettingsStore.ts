@@ -21,7 +21,7 @@ export const useSettingsStore = create<SettingsState>()(
       arabicFont: "amiri",
       arabicFontSize: 32,
       translationFontSize: 16,
-      theme: "light",
+      theme: "dark",
       arabicScript: "uthmani",
       setArabicFont: (font) => set({ arabicFont: font }),
       setArabicFontSize: (size) => set({ arabicFontSize: size }),
