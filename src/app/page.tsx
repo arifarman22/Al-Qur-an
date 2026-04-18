@@ -7,48 +7,28 @@ import SurahCard from "@/components/quran/SurahCard";
 import Container from "@/components/ui/Container";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import {
-  Search, ArrowUpDown, BookOpen, Star, GraduationCap, Brain,
-  Heart, Bookmark, User, ChevronRight, Sparkles, Play
-} from "lucide-react";
+import { QuranIcon, LearnIcon, MemorizeIcon, TasbihIcon, DuaIcon, BookmarkFilledIcon, OrnamentDivider } from "@/components/icons/IslamicIcons";
+import { Search, ArrowUpDown, ChevronRight, Play, BookOpen, User } from "lucide-react";
 import Link from "next/link";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 30 },
   visible: (i: number = 0) => ({
     opacity: 1, y: 0,
     transition: { duration: 0.6, delay: i * 0.1, ease },
   }),
 };
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: (i: number = 0) => ({
-    opacity: 1, scale: 1,
-    transition: { duration: 0.5, delay: i * 0.08, ease },
-  }),
-};
-
-function FeatureCard({ href, icon: Icon, label, color, delay }: {
-  href: string; icon: any; label: string; color: string; delay: number;
-}) {
-  return (
-    <motion.div variants={scaleIn} custom={delay} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}>
-      <Link href={href} className="group block">
-        <div className="card p-5 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-          <div className={`w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center ${color} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
-            <Icon size={22} className="text-white" />
-          </div>
-          <p className="text-sm font-semibold">{label}</p>
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
+const features = [
+  { href: "/learn", icon: LearnIcon, label: "Learn Quran", desc: "Step-by-step Arabic & Tajweed course", color: "bg-primary/10 text-primary" },
+  { href: "/memorize", icon: MemorizeIcon, label: "Memorize", desc: "Track your Hifz journey surah by surah", color: "bg-rose-100 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400" },
+  { href: "/tasbih", icon: TasbihIcon, label: "Tasbih", desc: "Digital dhikr counter with presets", color: "bg-violet-100 text-violet-600 dark:bg-violet-900/20 dark:text-violet-400" },
+  { href: "/duas", icon: DuaIcon, label: "Duas", desc: "Essential Quranic supplications", color: "bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400" },
+  { href: "/bookmarks", icon: BookmarkFilledIcon, label: "Bookmarks", desc: "Save ayahs with personal notes", color: "bg-sky-100 text-sky-600 dark:bg-sky-900/20 dark:text-sky-400" },
+];
 
 export default function HomePage() {
   const { user, loading: authLoading } = useAuthStore();
@@ -64,10 +44,10 @@ export default function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 40]);
 
   useEffect(() => {
-    const fetches: Promise<any>[] = [
+    const fetches: Promise<unknown>[] = [
       apiGetSurahs().then(setSurahs),
       apiGetDailyAyah().then(setDailyAyah).catch(() => {}),
     ];
@@ -75,7 +55,7 @@ export default function HomePage() {
       fetches.push(apiGetReadingProgress().then(setLastRead).catch(() => {}));
     }
     Promise.all(fetches)
-      .catch((e) => setError(e.message))
+      .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
   }, [user, authLoading]);
 
@@ -87,103 +67,98 @@ export default function HomePage() {
     })
     .sort((a, b) => (sort === "asc" ? a.id - b.id : b.id - a.id));
 
-  const featureLinks = [
-    { href: "/learn", icon: GraduationCap, label: "Learn Quran", color: "bg-emerald-600" },
-    { href: "/memorize", icon: Brain, label: "Memorize", color: "bg-violet-600" },
-    { href: "/tasbih", icon: Heart, label: "Tasbih", color: "bg-rose-600" },
-    { href: "/duas", icon: Sparkles, label: "Duas", color: "bg-amber-600" },
-    { href: "/bookmarks", icon: Bookmark, label: "Bookmarks", color: "bg-sky-600" },
-    ...(user ? [{ href: "/profile", icon: User, label: "Profile", color: "bg-slate-600" }] : []),
-  ];
+  const allFeatures = user
+    ? [...features, { href: "/profile", icon: () => <User size={22} />, label: "Profile", desc: "View stats & manage account", color: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400" }]
+    : features;
 
   return (
     <main className="min-h-screen bg-background">
       <Navbar />
 
-      {/* ── Hero Section ── */}
-      <motion.section ref={heroRef} style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative overflow-hidden">
-        {/* Islamic geometric background */}
-        <div className="absolute inset-0 islamic-geo-bg opacity-[0.04] dark:opacity-[0.06]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-background" />
+      {/* ═══ Hero ═══ */}
+      <motion.section ref={heroRef} style={{ opacity: heroOpacity }}
+        className="relative overflow-hidden border-b border-border">
+        <div className="absolute inset-0 islamic-geo-bg opacity-[0.03] dark:opacity-[0.05]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.04] via-transparent to-background" />
+        <div className="absolute top-16 -left-16 w-48 h-48 bg-primary/8 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-8 -right-16 w-56 h-56 bg-accent/8 rounded-full blur-3xl animate-float-delayed" />
 
-        {/* Floating decorative elements */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-10 right-10 w-40 h-40 bg-accent/10 rounded-full blur-3xl animate-float-delayed" />
-
-        <Container className="relative py-16 sm:py-24 text-center">
-          {/* Bismillah */}
-          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
-            <p className="text-3xl sm:text-5xl text-primary/80 dark:text-primary/70 mb-6 leading-relaxed"
+        <Container className="relative py-16 sm:py-20 text-center">
+          <motion.div style={{ y: heroY }}>
+            {/* Bismillah */}
+            <motion.p initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, ease }}
+              className="text-3xl sm:text-[2.8rem] text-primary dark:text-primary/80 mb-8 leading-relaxed"
               style={{ fontFamily: "var(--font-amiri)" }} dir="rtl">
               بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-            </p>
-          </motion.div>
+            </motion.p>
 
-          {/* Greeting */}
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-3xl sm:text-4xl font-bold mb-3 tracking-tight">
-            {user ? (
-              <>Assalamu Alaikum, <span className="text-primary">{user.name.split(" ")[0]}</span></>
-            ) : (
-              <>Welcome to <span className="text-primary">Al-Quran</span></>
-            )}
-          </motion.h1>
+            <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="text-3xl sm:text-4xl font-bold mb-3 tracking-tight">
+              {user ? (
+                <>Assalamu Alaikum, <span className="text-primary">{user.name.split(" ")[0]}</span></>
+              ) : (
+                <>The Noble <span className="text-primary">Quran</span></>
+              )}
+            </motion.h1>
 
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-muted max-w-lg mx-auto mb-8">
-            Read, listen, and reflect on the divine words of Allah ﷻ
-          </motion.p>
+            <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="text-muted max-w-md mx-auto mb-8 text-[15px]">
+              Read, listen, and reflect on the divine words of Allah ﷻ
+            </motion.p>
 
-          {/* CTA Buttons */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex items-center justify-center gap-3 flex-wrap">
-            {user && lastRead ? (
-              <Link href={`/surah/${lastRead.surahId}?ayah=${lastRead.ayahNumber}`}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary-dark shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:-translate-y-0.5">
-                <Play size={16} /> Continue · {lastRead.surahName}
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.35 }}
+              className="flex items-center justify-center gap-3 flex-wrap">
+              {user && lastRead ? (
+                <Link href={`/surah/${lastRead.surahId}?ayah=${lastRead.ayahNumber}`}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary-dark shadow-md shadow-primary/15 transition-all hover:-translate-y-0.5">
+                  <Play size={16} /> Continue · {lastRead.surahName}
+                </Link>
+              ) : (
+                <Link href="/surah/1"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary-dark shadow-md shadow-primary/15 transition-all hover:-translate-y-0.5">
+                  <BookOpen size={16} /> Start Reading
+                </Link>
+              )}
+              <Link href="/search"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-surface border border-border rounded-xl text-sm font-semibold hover:border-primary/30 hover:bg-primary/5 transition-all">
+                <Search size={16} /> Search Quran
               </Link>
-            ) : (
-              <Link href="/surah/1"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary-dark shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:-translate-y-0.5">
-                <BookOpen size={16} /> Start Reading
-              </Link>
-            )}
-            <Link href="/search"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border rounded-xl text-sm font-semibold hover:border-primary/40 hover:bg-primary/5 transition-all">
-              <Search size={16} /> Search Quran
-            </Link>
+            </motion.div>
           </motion.div>
         </Container>
       </motion.section>
 
-      {/* ── Daily Ayah ── */}
+      {/* ═══ Daily Ayah ═══ */}
       {dailyAyah && (
-        <section className="relative">
-          <Container className="py-8">
-            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
+        <section>
+          <Container className="py-10">
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               className="card p-6 sm:p-8 relative overflow-hidden">
-              {/* Decorative corner */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-accent/10 to-transparent rounded-bl-[3rem]" />
+              <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-bl from-accent/8 to-transparent rounded-bl-[3rem] pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-20 h-20 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[2rem] pointer-events-none" />
 
-              <div className="flex items-center gap-2 mb-5">
-                <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
-                  <Star size={16} className="text-accent" />
+              <div className="flex items-center gap-2.5 mb-6">
+                <div className="w-9 h-9 bg-accent/10 rounded-xl flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-accent">
+                    <path d="M12 2L14 8L20 8L15 12L17 18L12 14L7 18L9 12L4 8L10 8L12 2Z" />
+                  </svg>
                 </div>
-                <span className="text-sm font-semibold text-accent">Ayah of the Day</span>
-                <span className="text-xs text-muted ml-auto">{dailyAyah.surah.name_simple} · {dailyAyah.verse.verse_key}</span>
+                <div>
+                  <p className="text-sm font-semibold text-accent">Ayah of the Day</p>
+                  <p className="text-xs text-muted">{dailyAyah.surah.name_simple} · Ayah {dailyAyah.verse.verse_key}</p>
+                </div>
               </div>
 
-              <p className="text-right leading-[2.2] mb-5" dir="rtl"
-                style={{ fontSize: "28px", fontFamily: "var(--font-amiri)" }}>
+              <p className="text-right leading-[2.4] mb-6" dir="rtl"
+                style={{ fontSize: "26px", fontFamily: "var(--font-amiri)" }}>
                 {dailyAyah.verse.text_uthmani}
               </p>
 
-              <div className="w-16 h-px bg-border mx-auto mb-4" />
+              <OrnamentDivider className="mb-5" />
 
               <p className="text-sm text-muted leading-relaxed max-w-2xl mx-auto text-center"
                 dangerouslySetInnerHTML={{ __html: dailyAyah.verse.translations?.[0]?.text || "" }} />
@@ -199,47 +174,63 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* ── Feature Cards ── */}
+      {/* ═══ Features ═══ */}
       <section>
         <Container className="py-8">
-          <motion.h2 variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="text-lg font-bold mb-5">
-            Explore
-          </motion.h2>
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-bold">Explore</h2>
+          </motion.div>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {featureLinks.map((f, i) => (
-              <FeatureCard key={f.href} {...f} delay={i} />
+            {allFeatures.map((f, i) => (
+              <motion.div key={f.href}
+                variants={fadeUp} custom={i} initial="hidden" whileInView="visible"
+                viewport={{ once: true, margin: "-40px" }}>
+                <Link href={f.href} className="group block h-full">
+                  <div className="card p-4 h-full flex flex-col items-center text-center hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${f.color} transition-transform duration-300 group-hover:scale-110`}>
+                      <f.icon size={22} />
+                    </div>
+                    <p className="text-sm font-semibold mb-1">{f.label}</p>
+                    <p className="text-[11px] text-muted leading-snug hidden sm:block">{f.desc}</p>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </Container>
       </section>
 
-      {/* ── Surah List ── */}
-      <section>
-        <Container className="py-8 pb-16">
+      <OrnamentDivider className="max-w-2xl mx-auto px-4" />
+
+      {/* ═══ Surah List ═══ */}
+      <section id="surahs">
+        <Container className="py-10 pb-16">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold">All 114 Surahs</h2>
-            <span className="text-xs text-muted">{filtered.length} surahs</span>
+            className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-lg font-bold">All 114 Surahs</h2>
+              <p className="text-xs text-muted mt-0.5">{filtered.length} surahs · Browse the complete Quran</p>
+            </div>
           </motion.div>
 
-          {/* Filters */}
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-1">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+              <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
               <input type="text" placeholder="Search by name, number, or Arabic..." value={query} onChange={(e) => setQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all" />
+                className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-xl text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all" />
             </div>
-            <select value={filter} onChange={(e) => setFilter(e.target.value as any)}
-              className="px-3 py-2.5 bg-surface border border-border rounded-xl text-sm outline-none focus:border-primary">
+            <select value={filter} onChange={(e) => setFilter(e.target.value as "all" | "meccan" | "medinan")}
+              className="px-3 py-2.5 bg-surface border border-border rounded-xl text-sm outline-none focus:border-primary cursor-pointer">
               <option value="all">All Surahs</option>
               <option value="meccan">Meccan</option>
               <option value="medinan">Medinan</option>
             </select>
             <button onClick={() => setSort(sort === "asc" ? "desc" : "asc")}
-              className="flex items-center gap-1.5 px-3 py-2.5 bg-surface border border-border rounded-xl text-sm hover:border-primary transition-colors">
-              <ArrowUpDown size={16} />{sort === "asc" ? "1 → 114" : "114 → 1"}
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-surface border border-border rounded-xl text-sm hover:border-primary/30 transition-colors">
+              <ArrowUpDown size={15} />{sort === "asc" ? "1 → 114" : "114 → 1"}
             </button>
           </motion.div>
 
@@ -248,7 +239,7 @@ export default function HomePage() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {Array.from({ length: 9 }).map((_, i) => (
-                <div key={i} className="h-[72px] bg-surface border border-border rounded-xl animate-pulse" />
+                <div key={i} className="h-24 bg-surface border border-border rounded-2xl animate-pulse" />
               ))}
             </div>
           ) : filtered.length > 0 ? (

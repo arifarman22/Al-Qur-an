@@ -1,43 +1,45 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #059669;
-  --color-primary-light: #d1fae5;
-  --color-primary-dark: #065f46;
-  --color-accent: #ca8a04;
+  /* ── Islamic Teal & Gold Palette ── */
+  --color-primary: #1B7A6E;
+  --color-primary-light: #E0F2EF;
+  --color-primary-dark: #145C53;
+  --color-accent: #C5963A;
+  --color-accent-light: #FDF3E0;
   --color-surface: var(--surface);
   --color-surface-alt: var(--surface-alt);
   --color-border: var(--border-color);
   --color-muted: var(--muted-color);
   --color-background: var(--bg);
   --color-foreground: var(--fg);
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-arabic: "Amiri", serif;
 }
 
-/* ─── Light Mode ─── */
+/* ── Light Mode — Warm Parchment ── */
 :root {
-  --bg: #ffffff;
-  --fg: #111827;
-  --surface: #ffffff;
-  --surface-alt: #f9fafb;
-  --border-color: #e5e7eb;
-  --muted-color: #6b7280;
+  --bg: #FAF8F5;
+  --fg: #1C1917;
+  --surface: #FFFFFF;
+  --surface-alt: #F5F1EC;
+  --border-color: #E7E0D8;
+  --muted-color: #78716C;
   color-scheme: light;
 }
 
-/* ─── Dark Mode ─── */
+/* ── Dark Mode ── */
 .dark {
-  --bg: #0b1120;
-  --fg: #e2e8f0;
-  --surface: #1a2332;
-  --surface-alt: #0f1829;
-  --border-color: #2a3a4e;
-  --muted-color: #8b9cb8;
+  --bg: #0C1220;
+  --fg: #E8E4DF;
+  --surface: #1A2332;
+  --surface-alt: #111827;
+  --border-color: #2D3A4A;
+  --muted-color: #9CA3AF;
   color-scheme: dark;
 }
 
-/* ─── Base ─── */
+/* ── Base ── */
 @layer base {
   * {
     @apply border-border;
@@ -45,53 +47,48 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
-  /* Headings */
   h1, h2, h3, h4, h5, h6 {
     @apply text-foreground;
   }
 
-  /* Links */
   a {
     @apply transition-colors;
   }
 
-  /* Inputs & Selects */
   input, textarea, select {
-    @apply bg-surface-alt text-foreground placeholder:text-muted/50;
+    @apply bg-surface text-foreground placeholder:text-muted/50;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
 
   .dark input,
   .dark textarea,
   .dark select {
-    @apply bg-[#0f1829] text-[#e2e8f0] border-[#2a3a4e];
+    @apply bg-[#111827] text-[#E8E4DF] border-[#2D3A4A];
   }
 
   .dark input::placeholder,
   .dark textarea::placeholder {
-    color: #5a6b82;
+    color: #6B7280;
   }
 
   .dark input:focus,
   .dark textarea:focus,
   .dark select:focus {
-    border-color: #059669;
-    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15);
+    border-color: #1B7A6E;
+    box-shadow: 0 0 0 2px rgba(27, 122, 110, 0.15);
   }
 
-  /* Selection */
   ::selection {
-    @apply bg-primary/20 text-foreground;
+    @apply bg-primary/15 text-foreground;
   }
 
   .dark ::selection {
-    background: rgba(5, 150, 105, 0.3);
+    background: rgba(27, 122, 110, 0.3);
   }
 
-  /* Images */
   img {
     @apply transition-opacity;
   }
@@ -101,11 +98,11 @@
   }
 }
 
-/* ─── Utilities ─── */
+/* ── Utilities ── */
 @layer utilities {
   .card {
-    @apply bg-surface border border-border rounded-xl;
-    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    @apply bg-surface border border-border rounded-2xl;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
 
   .dark .card {
@@ -113,15 +110,14 @@
   }
 
   .card:hover {
-    @apply border-primary/30;
+    @apply border-primary/25;
   }
 
   .dark .card:hover {
-    border-color: rgba(5, 150, 105, 0.4);
-    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.08);
+    border-color: rgba(27, 122, 110, 0.35);
+    box-shadow: 0 4px 12px rgba(27, 122, 110, 0.06);
   }
 
-  /* Line clamp for surah history */
   .line-clamp-6 {
     display: -webkit-box;
     -webkit-line-clamp: 6;
@@ -130,36 +126,36 @@
   }
 }
 
-/* ─── Smooth Scroll ─── */
+/* ── Smooth Scroll ── */
 html {
   scroll-behavior: smooth;
 }
 
-/* ─── Islamic Geometric Background ─── */
+/* ── Islamic Geometric Background ── */
 .islamic-geo-bg {
   background-image:
-    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23059669' stroke-width='0.8'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3Cpath d='M40 10L70 40L40 70L10 40Z'/%3E%3Ccircle cx='40' cy='40' r='15'/%3E%3Cpath d='M40 0v80M0 40h80'/%3E%3C/g%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%231B7A6E' stroke-width='0.6'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3Cpath d='M40 12L68 40L40 68L12 40Z'/%3E%3Ccircle cx='40' cy='40' r='14'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 80px 80px;
 }
 
-/* ─── Floating Animations ─── */
+/* ── Floating Animations ── */
 @keyframes float {
   0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-20px) scale(1.05); }
+  50% { transform: translateY(-18px) scale(1.04); }
 }
 @keyframes float-delayed {
   0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-15px) scale(1.03); }
+  50% { transform: translateY(-12px) scale(1.02); }
 }
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 7s ease-in-out infinite;
 }
 .animate-float-delayed {
-  animation: float-delayed 8s ease-in-out infinite;
-  animation-delay: 2s;
+  animation: float-delayed 9s ease-in-out infinite;
+  animation-delay: 3s;
 }
 
-/* ─── Scrollbar ─── */
+/* ── Scrollbar ── */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -167,50 +163,43 @@ html {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary/20 rounded-full;
+  @apply bg-primary/15 rounded-full;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(5, 150, 105, 0.3);
+  background: rgba(27, 122, 110, 0.25);
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary/40;
+  @apply bg-primary/30;
 }
 
-/* ─── Dark mode specific overrides ─── */
-
-/* Navbar backdrop */
+/* ── Dark mode overrides ── */
 .dark header {
-  background: rgba(11, 17, 32, 0.85);
+  background: rgba(12, 18, 32, 0.88);
   backdrop-filter: blur(12px);
 }
 
-/* Settings drawer */
 .dark .fixed .bg-black\/30 {
   background: rgba(0, 0, 0, 0.6);
 }
 
-/* Buttons */
 .dark button {
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* Primary button hover in dark */
 .dark .bg-primary:hover {
-  background-color: #047857;
+  background-color: #145C53;
 }
 
-/* Badge / tag styles */
 .dark .bg-primary\/10 {
-  background: rgba(5, 150, 105, 0.15);
+  background: rgba(27, 122, 110, 0.15);
 }
 
-/* Audio player bar */
 .dark .fixed.bottom-0 {
-  background: rgba(11, 17, 32, 0.95);
+  background: rgba(12, 18, 32, 0.95);
   backdrop-filter: blur(12px);
 }
 
-/* Range inputs */
+/* ── Range inputs ── */
 input[type="range"] {
   @apply appearance-none bg-border rounded-full cursor-pointer;
   height: 4px;
@@ -224,10 +213,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.2);
 }
 .dark input[type="range"] {
-  background: #2a3a4e;
+  background: #2D3A4A;
 }
 
-/* Prose (surah history HTML content) */
+/* ── Prose ── */
 .prose {
   @apply text-muted;
 }
@@ -241,16 +230,16 @@ input[type="range"]::-webkit-slider-thumb:hover {
   @apply text-primary underline;
 }
 .dark .prose {
-  color: #8b9cb8;
+  color: #9CA3AF;
 }
 .dark .prose h2,
 .dark .prose h3 {
-  color: #e2e8f0;
+  color: #E8E4DF;
 }
 
-/* Skeleton pulse in dark */
+/* ── Skeleton pulse dark ── */
 .dark .animate-pulse {
-  background: linear-gradient(90deg, #1a2332 25%, #243044 50%, #1a2332 75%);
+  background: linear-gradient(90deg, #1A2332 25%, #243044 50%, #1A2332 75%);
   background-size: 200% 100%;
   animation: pulse-dark 1.5s ease-in-out infinite;
 }
@@ -260,14 +249,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
   100% { background-position: -200% 0; }
 }
 
-/* Toast overrides for dark */
+/* ── Toast dark ── */
 .dark [data-sonner-toaster] {
-  --normal-bg: #1a2332;
-  --normal-border: #2a3a4e;
-  --normal-text: #e2e8f0;
+  --normal-bg: #1A2332;
+  --normal-border: #2D3A4A;
+  --normal-text: #E8E4DF;
 }
 
-/* Smooth theme transition */
+/* ── Theme transition ── */
 html.dark {
-  background: #0b1120;
+  background: #0C1220;
 }
