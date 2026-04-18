@@ -5,13 +5,16 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuthStore } from "@/store/useAuthStore";
 import { motion } from "framer-motion";
-import { UserPlus, Mail, Lock, User, AlertCircle, Loader2 } from "lucide-react";
+import { UserPlus, Mail, Lock, User, AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const { register, error, clearError } = useAuthStore();
   const router = useRouter();
@@ -19,7 +22,8 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
-    if (!name || !email || !password) return;
+    if (!name || !email || !password || !confirmPassword) return;
+    if (password !== confirmPassword) { clearError(); return; }
     setSubmitting(true);
     const ok = await register(name, email, password);
     setSubmitting(false);
@@ -53,6 +57,13 @@ export default function RegisterPage() {
               </motion.div>
             )}
 
+            {password && confirmPassword && password !== confirmPassword && (
+              <div className="flex items-center gap-2 text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 text-sm p-3 rounded-lg">
+                <AlertCircle size={16} className="shrink-0" />
+                Passwords do not match
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-medium mb-1.5">Full Name</label>
               <div className="relative">
@@ -75,13 +86,28 @@ export default function RegisterPage() {
               <label className="block text-sm font-medium mb-1.5">Password</label>
               <div className="relative">
                 <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min. 8 chars, A-Z, a-z, 0-9" required minLength={8}
-                  className="w-full pl-10 pr-4 py-2.5 bg-surface-alt border border-border rounded-lg text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all" />
+                <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min. 8 chars, A-Z, a-z, 0-9" required minLength={8}
+                  className="w-full pl-10 pr-10 py-2.5 bg-surface-alt border border-border rounded-lg text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors">
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
               <p className="text-[11px] text-muted mt-1">Must include uppercase, lowercase, and a number</p>
             </div>
 
-            <button type="submit" disabled={submitting}
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Confirm Password</label>
+              <div className="relative">
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                <input type={showConfirm ? "text" : "password"} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Re-enter your password" required minLength={8}
+                  className="w-full pl-10 pr-10 py-2.5 bg-surface-alt border border-border rounded-lg text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all" />
+                <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors">
+                  {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" disabled={submitting || (!!confirmPassword && password !== confirmPassword)}
               className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-60">
               {submitting ? <Loader2 size={18} className="animate-spin" /> : <UserPlus size={18} />}
               {submitting ? "Creating..." : "Create Account"}
