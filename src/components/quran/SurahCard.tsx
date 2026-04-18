@@ -10,7 +10,7 @@ export default function SurahCard({ surah, index }: { surah: SurahDTO; index: nu
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-30px" }}
-      transition={{ delay: (index % 6) * 0.04, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay: (index % 6) * 0.04, duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
     >
       <Link href={`/surah/${surah.id}`}>
         <div className="card p-4 flex items-center justify-between gap-4 hover:border-primary/40 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group">
