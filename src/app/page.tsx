@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { apiGetSurahs, apiGetDailyAyah, apiGetReadingProgress, type SurahDTO, type DailyAyahDTO, type ReadingProgressDTO } from "@/utils/api";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { apiGetSurahs, apiGetDailyAyah, apiGetReadingProgress, apiSearch, type SurahDTO, type DailyAyahDTO, type ReadingProgressDTO, type SearchResultDTO } from "@/utils/api";
 import { useAuthStore } from "@/store/useAuthStore";
 import SurahCard from "@/components/quran/SurahCard";
 import Container from "@/components/ui/Container";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { QuranIcon, LearnIcon, MemorizeIcon, TasbihIcon, DuaIcon, BookmarkFilledIcon, OrnamentDivider } from "@/components/icons/IslamicIcons";
-import { Search, ArrowUpDown, ChevronRight, Play, BookOpen, User } from "lucide-react";
+import { Search, ArrowUpDown, ChevronRight, Play, BookOpen, User, ArrowRight, Loader2, X } from "lucide-react";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -41,10 +42,64 @@ export default function HomePage() {
   const [dailyAyah, setDailyAyah] = useState<DailyAyahDTO | null>(null);
   const [lastRead, setLastRead] = useState<ReadingProgressDTO | null>(null);
 
+  const router = useRouter();
   const heroRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 40]);
+
+  // Hero search state
+  const [heroQuery, setHeroQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<SurahDTO[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResultDTO[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) setShowDropdown(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  // Live suggestions as user types
+  const onHeroQueryChange = useCallback((val: string) => {
+    setHeroQuery(val);
+    if (!val.trim()) { setSuggestions([]); setSearchResults([]); setShowDropdown(false); return; }
+    // Surah name suggestions (instant)
+    const matched = surahs.filter((s) =>
+      s.name_simple.toLowerCase().includes(val.toLowerCase()) ||
+      s.name_arabic.includes(val) ||
+      s.translated_name.name.toLowerCase().includes(val.toLowerCase()) ||
+      s.id.toString() === val.trim()
+    ).slice(0, 5);
+    setSuggestions(matched);
+    setShowDropdown(true);
+    // Debounced API search
+    clearTimeout(debounceRef.current!);
+    if (val.trim().length >= 3) {
+      debounceRef.current = setTimeout(async () => {
+        try {
+          const res = await apiSearch(val);
+          setSearchResults(res.slice(0, 5));
+          setShowDropdown(true);
+        } catch { setSearchResults([]); }
+      }, 400);
+    } else {
+      setSearchResults([]);
+    }
+  }, [surahs]);
+
+  const handleHeroSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!heroQuery.trim()) return;
+    setShowDropdown(false);
+    router.push(`/search?q=${encodeURIComponent(heroQuery)}`);
+  };
 
   useEffect(() => {
     const fetches: Promise<unknown>[] = [
@@ -109,8 +164,93 @@ export default function HomePage() {
               Read, listen, and reflect on the divine words of Allah ﷻ
             </motion.p>
 
+            {/* Hero Search Bar */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.35 }}
+              ref={searchRef}
+              className="relative max-w-xl mx-auto w-full mb-6">
+              <form onSubmit={handleHeroSearch}>
+                <div className="relative">
+                  <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+                  <input
+                    type="text"
+                    placeholder="Search surah, ayah, or topic..."
+                    value={heroQuery}
+                    onChange={(e) => onHeroQueryChange(e.target.value)}
+                    onFocus={() => { if (heroQuery.trim()) setShowDropdown(true); }}
+                    className="w-full pl-12 pr-24 py-4 bg-surface border border-border rounded-2xl text-base outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 shadow-lg shadow-black/5 dark:shadow-black/20 transition-all placeholder:text-muted/60"
+                  />
+                  {heroQuery && (
+                    <button type="button" onClick={() => { setHeroQuery(""); setSuggestions([]); setSearchResults([]); setShowDropdown(false); }}
+                      className="absolute right-[4.5rem] top-1/2 -translate-y-1/2 p-1 text-muted hover:text-foreground transition-colors">
+                      <X size={16} />
+                    </button>
+                  )}
+                  <button type="submit"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary-dark transition-colors">
+                    Search
+                  </button>
+                </div>
+              </form>
+
+              {/* Dropdown */}
+              <AnimatePresence>
+                {showDropdown && (suggestions.length > 0 || searchResults.length > 0) && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-0 right-0 mt-2 bg-surface border border-border rounded-2xl shadow-xl shadow-black/10 dark:shadow-black/30 overflow-hidden z-50 max-h-[400px] overflow-y-auto"
+                  >
+                    {/* Surah suggestions */}
+                    {suggestions.length > 0 && (
+                      <div className="p-2">
+                        <p className="text-[10px] font-semibold text-muted uppercase tracking-wider px-3 py-1.5">Surahs</p>
+                        {suggestions.map((s) => (
+                          <Link key={s.id} href={`/surah/${s.id}`}
+                            onClick={() => setShowDropdown(false)}
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-primary/5 transition-colors">
+                            <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">
+                              {s.id}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{s.name_simple}</p>
+                              <p className="text-[11px] text-muted">{s.translated_name.name} · {s.verses_count} Ayahs</p>
+                            </div>
+                            <p className="text-base text-primary/70 shrink-0" style={{ fontFamily: "var(--font-amiri)" }}>{s.name_arabic}</p>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Ayah search results */}
+                    {searchResults.length > 0 && (
+                      <div className="p-2 border-t border-border">
+                        <p className="text-[10px] font-semibold text-muted uppercase tracking-wider px-3 py-1.5">Ayahs</p>
+                        {searchResults.map((r, i) => (
+                          <Link key={`${r.verse_key}-${i}`}
+                            href={`/surah/${r.verse_key.split(":")[0]}?ayah=${r.verse_key.split(":")[1]}`}
+                            onClick={() => setShowDropdown(false)}
+                            className="flex items-start gap-3 px-3 py-2.5 rounded-xl hover:bg-primary/5 transition-colors">
+                            <span className="text-[10px] font-semibold bg-primary/10 text-primary px-1.5 py-0.5 rounded mt-0.5 shrink-0">{r.verse_key}</span>
+                            <p className="text-xs text-muted leading-relaxed line-clamp-2" dangerouslySetInnerHTML={{ __html: r.text }} />
+                          </Link>
+                        ))}
+                        <button onClick={() => { setShowDropdown(false); router.push(`/search?q=${encodeURIComponent(heroQuery)}`); }}
+                          className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs text-primary font-medium hover:bg-primary/5 rounded-xl transition-colors">
+                          View all results <ArrowRight size={12} />
+                        </button>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.45 }}
               className="flex items-center justify-center gap-3 flex-wrap">
               {user && lastRead ? (
                 <Link href={`/surah/${lastRead.surahId}?ayah=${lastRead.ayahNumber}`}
@@ -123,10 +263,6 @@ export default function HomePage() {
                   <BookOpen size={16} /> Start Reading
                 </Link>
               )}
-              <Link href="/search"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-surface border border-border rounded-xl text-sm font-semibold hover:border-primary/30 hover:bg-primary/5 transition-all">
-                <Search size={16} /> Search Quran
-              </Link>
             </motion.div>
           </motion.div>
         </Container>
