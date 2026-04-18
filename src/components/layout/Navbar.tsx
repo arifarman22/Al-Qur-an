@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpen, Search, Bookmark, Settings, Moon, Sun, LogOut, Menu, X, User } from "lucide-react";
+import { BookOpen, Search, Bookmark, Settings, Moon, Sun, LogOut, LogIn, UserPlus, Menu, X, User } from "lucide-react";
 import { cn } from "@/utils/utils";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -57,7 +57,7 @@ export default function Navbar() {
             <button onClick={() => setSettingsOpen(true)} className="p-2 rounded-md text-muted hover:text-foreground hover:bg-surface-alt transition-colors">
               <Settings size={18} />
             </button>
-            {user && (
+            {user ? (
               <div className="hidden sm:flex items-center gap-2 ml-2 pl-2 border-l border-border">
                 <Link href="/profile" className="w-7 h-7 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold hover:bg-primary/20 transition-colors">
                   {user.name[0].toUpperCase()}
@@ -66,6 +66,15 @@ export default function Navbar() {
                 <button onClick={handleLogout} className="p-2 rounded-md text-muted hover:text-red-500 transition-colors" title="Logout">
                   <LogOut size={16} />
                 </button>
+              </div>
+            ) : (
+              <div className="hidden sm:flex items-center gap-2 ml-2 pl-2 border-l border-border">
+                <Link href="/login" className="px-3 py-1.5 text-sm font-medium text-muted hover:text-foreground transition-colors">
+                  Log in
+                </Link>
+                <Link href="/register" className="px-3 py-1.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors">
+                  Sign up
+                </Link>
               </div>
             )}
             <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 rounded-md text-muted hover:text-foreground">
@@ -81,7 +90,7 @@ export default function Navbar() {
                 <item.icon size={16} />{item.name}
               </Link>
             ))}
-            {user && (
+            {user ? (
               <>
                 <Link href="/profile" onClick={() => setMobileOpen(false)}
                   className={cn("flex items-center gap-2 px-3 py-2 rounded-md text-sm", pathname === "/profile" ? "bg-primary/10 text-primary font-medium" : "text-muted")}>
@@ -90,6 +99,17 @@ export default function Navbar() {
                 <button onClick={handleLogout} className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-red-500 w-full">
                 <LogOut size={16} />Sign out
               </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-muted">
+                  <LogIn size={16} />Log in
+                </Link>
+                <Link href="/register" onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-primary font-medium">
+                  <UserPlus size={16} />Sign up
+                </Link>
               </>
             )}
           </div>

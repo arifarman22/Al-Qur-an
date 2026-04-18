@@ -7,14 +7,15 @@ import { motion } from "framer-motion";
 export default function SurahCard({ surah, index }: { surah: SurahDTO; index: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.015, duration: 0.3 }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-30px" }}
+      transition={{ delay: (index % 6) * 0.04, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
     >
       <Link href={`/surah/${surah.id}`}>
-        <div className="card p-4 flex items-center justify-between gap-4 hover:border-primary/40 hover:shadow-sm transition-all group">
+        <div className="card p-4 flex items-center justify-between gap-4 hover:border-primary/40 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group">
           <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-200">
               {surah.id}
             </div>
             <div>
