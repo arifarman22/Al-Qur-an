@@ -36,7 +36,7 @@ export default function SplashScreen() {
           className="text-center"
         >
           <h1 className="text-3xl font-bold text-white tracking-tight">Al-Quran</h1>
-          <p className="text-white/60 text-sm mt-1">The Noble Quran</p>
+          <p className="text-white/60 text-sm mt-1">The Holy Quran</p>
         </motion.div>
 
         {/* Quranic Verse */}

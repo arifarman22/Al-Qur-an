@@ -16,7 +16,7 @@ export default function Footer() {
           </Link>
 
           <p className="text-xs text-muted max-w-xs leading-relaxed">
-            Read, listen, and reflect on the divine words of the Noble Quran.
+            Read, listen, and reflect on the divine words of the Holy Quran.
           </p>
 
           <div className="flex items-center gap-3">

@@ -104,7 +104,7 @@ export default function DuasPage() {
       <Container className="py-8 max-w-3xl">
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-1">Quranic Duas</h1>
-          <p className="text-muted text-sm">Essential supplications from the Noble Quran.</p>
+          <p className="text-muted text-sm">Essential supplications from the Holy Quran.</p>
         </div>
 
         <div className="flex gap-2 flex-wrap mb-6">

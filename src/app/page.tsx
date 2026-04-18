@@ -154,7 +154,7 @@ export default function HomePage() {
               {user ? (
                 <>Assalamu Alaikum, <span className="text-primary">{user.name.split(" ")[0]}</span></>
               ) : (
-                <>The Noble <span className="text-primary">Quran</span></>
+                <>The Holy <span className="text-primary">Quran</span></>
               )}
             </motion.h1>
 

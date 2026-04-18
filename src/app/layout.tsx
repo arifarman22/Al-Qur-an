@@ -9,8 +9,8 @@ const amiri = Amiri({ weight: ["400", "700"], subsets: ["arabic"], variable: "--
 const scheherazade = Scheherazade_New({ weight: ["400", "700"], subsets: ["arabic"], variable: "--font-scheherazade", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Al-Quran | The Noble Quran",
-  description: "Read, listen, and study the Noble Quran.",
+  title: "Al-Quran | The Holy Quran",
+  description: "Read, listen, and study the Holy Quran.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
