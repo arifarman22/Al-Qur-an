@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useState } from "react";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import Container from "@/components/ui/Container";
 import Navbar from "@/components/layout/Navbar";
@@ -85,14 +83,9 @@ const DUAS = [
 ];
 
 export default function DuasPage() {
-  const { user, loading: authLoading } = useAuthStore();
   const { arabicFontSize, arabicFont } = useSettingsStore();
-  const router = useRouter();
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const [filter, setFilter] = useState("All");
-
-  useEffect(() => { if (!authLoading && !user) router.replace("/login"); }, [user, authLoading, router]);
-  if (authLoading || !user) return <div className="min-h-screen bg-surface-alt" />;
 
   const categories = ["All", ...Array.from(new Set(DUAS.map((d) => d.category)))];
   const filtered = filter === "All" ? DUAS : DUAS.filter((d) => d.category === filter);

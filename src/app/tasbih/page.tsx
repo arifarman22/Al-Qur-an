@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/useAuthStore";
 import Container from "@/components/ui/Container";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -19,23 +17,15 @@ const PRESETS = [
 ];
 
 export default function TasbihPage() {
-  const { user, loading: authLoading } = useAuthStore();
-  const router = useRouter();
   const [selected, setSelected] = useState(0);
   const [count, setCount] = useState(0);
   const [totalAll, setTotalAll] = useState(0);
   const [pressed, setPressed] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && !user) router.replace("/login");
-  }, [user, authLoading, router]);
-
-  useEffect(() => {
     const saved = localStorage.getItem("tasbih-total");
     if (saved) setTotalAll(parseInt(saved) || 0);
   }, []);
-
-  if (authLoading || !user) return <div className="min-h-screen bg-surface-alt" />;
 
   const preset = PRESETS[selected];
   const progress = Math.min((count / preset.target) * 100, 100);

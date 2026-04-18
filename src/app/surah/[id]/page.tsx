@@ -38,19 +38,17 @@ export default function SurahDetailPage({ params }: { params: Promise<{ id: stri
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) { router.replace("/login"); return; }
-    Promise.all([
+    const fetches: Promise<any>[] = [
       apiGetSurah(+id),
       apiGetSurahInfo(+id).catch(() => null),
       apiGetAyahs(+id, arabicScript),
-      loadBookmarks(),
-    ])
+    ];
+    if (user) fetches.push(loadBookmarks());
+    Promise.all(fetches)
       .then(([s, info, a]) => { setSurah(s); setSurahInfo(info); setAyahs(a); })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [id, arabicScript, user, authLoading, router, loadBookmarks]);
-
-  if (authLoading || !user) return <div className="min-h-screen bg-surface-alt" />;
+  }, [id, arabicScript, user, authLoading, loadBookmarks]);
 
   if (loading) {
     return (
@@ -215,7 +213,7 @@ export default function SurahDetailPage({ params }: { params: Promise<{ id: stri
               bookmarkId={bookmarkMap[ayah.verse_key]}
               onBookmarkChange={loadBookmarks}
               onRead={(verseNum) => {
-                apiSaveReadingProgress(surah.id, surah.name_simple, verseNum).catch(() => {});
+                if (user) apiSaveReadingProgress(surah.id, surah.name_simple, verseNum).catch(() => {});
               }}
             />
           ))}
