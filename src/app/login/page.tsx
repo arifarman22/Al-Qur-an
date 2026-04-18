@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuthStore } from "@/store/useAuthStore";
 import { motion } from "framer-motion";
 import { LogIn, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
+import Navbar from "@/components/layout/Navbar";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -25,13 +26,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-alt px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full max-w-md"
-      >
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="flex items-center justify-center px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="w-full max-w-md"
+        >
         <div className="text-center mb-8">
           <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
             <span className="text-white text-2xl font-bold" style={{ fontFamily: "var(--font-amiri)" }}>ق</span>
@@ -79,7 +82,8 @@ export default function LoginPage() {
           Don&apos;t have an account?{" "}
           <Link href="/register" className="text-primary font-medium hover:underline">Create one</Link>
         </p>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }
