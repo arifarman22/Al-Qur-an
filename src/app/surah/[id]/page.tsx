@@ -10,7 +10,6 @@ import MushafStyleSelector from "@/components/quran/MushafStyleSelector";
 import { cn } from "@/utils/utils";
 import { toast } from "sonner";
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
 import { Home, BookOpen, Search, Bookmark, Moon, Sun, Menu, X, ChevronLeft, ChevronRight, Settings, Type } from "lucide-react";
 
 export default function SurahPage({ params }: { params: Promise<{ id: string }> }) {
@@ -55,11 +54,59 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
 
   return (
     <div className="h-screen bg-background flex flex-col">
-      {/* ═══ NAVBAR ═══ */}
-      <Navbar />
+      {/* ═══ NAVBAR (simplified) ═══ */}
+      <header className="h-14 bg-surface/80 backdrop-blur-xl border-b border-border flex items-center px-4 sm:px-6 shrink-0">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="w-9 h-9 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+            <span className="text-white text-base font-bold" style={{ fontFamily: "var(--font-amiri)" }}>ق</span>
+          </div>
+          <div className="hidden sm:block">
+            <span className="font-bold text-sm">Al-Quran</span>
+            <p className="text-[10px] text-muted -mt-0.5">The Noble Quran</p>
+          </div>
+        </Link>
+        <div className="flex-1" />
+        <div className="flex items-center gap-2">
+          <button onClick={() => setRightPanelOpen(!rightPanelOpen)} className={cn("w-9 h-9 rounded-xl border flex items-center justify-center transition-colors", rightPanelOpen ? "bg-primary/10 border-primary/20 text-primary" : "bg-surface-alt border-border text-muted hover:text-foreground")} title="Settings">
+            <Settings size={16} />
+          </button>
+          <button onClick={settings.toggleTheme} className="w-9 h-9 rounded-xl bg-surface-alt border border-border flex items-center justify-center text-muted hover:text-foreground transition-colors" title="Toggle theme">
+            {settings.theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+          <Link href="/surah/1" className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-primary-dark text-white rounded-xl text-sm font-medium shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all">
+            <BookOpen size={15} />
+            Start Reading
+          </Link>
+        </div>
+      </header>
 
       {/* ═══ MAIN 3-PANEL LAYOUT ═══ */}
       <div className="flex flex-1 overflow-hidden min-h-0">
+
+        {/* ═══ FAR LEFT: ICON NAV PANEL ═══ */}
+        <aside className="hidden md:flex flex-col items-center w-14 bg-surface border-r border-border py-4 shrink-0">
+          <Link href="/" className="w-9 h-9 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center mb-6 hover:scale-105 transition-transform">
+            <span className="text-white text-sm font-bold" style={{ fontFamily: "var(--font-amiri)" }}>ق</span>
+          </Link>
+          <nav className="flex flex-col items-center gap-1 flex-1">
+            <Link href="/" title="Home" className="w-10 h-10 rounded-xl flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-alt transition-colors"><Home size={18} /></Link>
+            <button title="Surahs" onClick={() => setSidebarOpen(!sidebarOpen)} className="w-10 h-10 rounded-xl flex items-center justify-center text-primary bg-primary/10 transition-colors"><BookOpen size={18} /></button>
+            <Link href="/search" title="Search" className="w-10 h-10 rounded-xl flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-alt transition-colors"><Search size={18} /></Link>
+            <Link href="/bookmarks" title="Bookmarks" className="w-10 h-10 rounded-xl flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-alt transition-colors"><Bookmark size={18} /></Link>
+            <Link href="/prayer-times" title="Prayer Times" className="w-10 h-10 rounded-xl flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-alt transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-[18px] h-[18px]"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+            </Link>
+            <Link href="/learn" title="Learn" className="w-10 h-10 rounded-xl flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-alt transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-[18px] h-[18px]"><path d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342" /></svg>
+            </Link>
+          </nav>
+          <div className="flex flex-col items-center gap-1">
+            <button onClick={() => setRightPanelOpen(!rightPanelOpen)} title="Settings" className={cn("w-10 h-10 rounded-xl flex items-center justify-center transition-colors", rightPanelOpen ? "text-primary bg-primary/10" : "text-muted hover:text-foreground hover:bg-surface-alt")}><Settings size={18} /></button>
+            <button onClick={settings.toggleTheme} title="Theme" className="w-10 h-10 rounded-xl flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-alt transition-colors">
+              {settings.theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+          </div>
+        </aside>
 
         {/* ═══ LEFT: SURAH SIDEBAR ═══ */}
         {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
