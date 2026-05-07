@@ -27,11 +27,11 @@
 }
 
 .dark {
-  --bg: #0f172a;
+  --bg: #000000;
   --fg: #f1f5f9;
-  --surface: #1e293b;
-  --surface-alt: #0f172a;
-  --border-color: #334155;
+  --surface: #111111;
+  --surface-alt: #000000;
+  --border-color: #222222;
   --muted-color: #94a3b8;
   color-scheme: dark;
 }

@@ -36,23 +36,21 @@ export default function HomePage() {
       <Navbar />
 
       {/* ═══════ HERO SECTION ═══════ */}
-      <section className="relative overflow-hidden h-[85vh] min-h-[600px] flex items-center justify-center">
+      <section className="relative overflow-hidden">
         {/* Background Image */}
-        <div className="absolute inset-0">
-          <img src="/mainbanner.png" alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-black/60" />
-        </div>
-
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+        <div className="relative w-full">
+          <img src="/mainbanner.png" alt="" className="w-full h-auto" />
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           {/* H1 with special font */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
-            className="text-5xl sm:text-6xl lg:text-7xl mb-8 leading-tight"
-            style={{ fontFamily: "var(--font-amiri)" }}
+            className="text-5xl sm:text-6xl lg:text-7xl mb-8 leading-tight font-bold"
           >
-            القرآن الكريم
+            The Noble Quran
           </motion.h1>
 
           {/* Search Bar */}
@@ -70,6 +68,8 @@ export default function HomePage() {
 
           {/* Auto-sliding Ayahs (3 ayahs) */}
           <AyahSlider />
+            </div>
+          </div>
         </div>
       </section>
 
