@@ -25,6 +25,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rightPanelOpen, setRightPanelOpen] = useState(true);
   const [rightTab, setRightTab] = useState<"translation" | "reading">("translation");
+  const [readingMode, setReadingMode] = useState<"ayah" | "arabic" | "translation" | "mushaf" | "wordbyword">("ayah");
   const [surahSearch, setSurahSearch] = useState("");
 
   const fontFamily = settings.arabicFont === "amiri" ? "var(--font-amiri)" : "var(--font-scheherazade)";
@@ -133,9 +134,81 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                   </div>
                 )}
 
-                {ayahs.map((ayah, index) => (
+                {readingMode === "mushaf" ? (
+                  /* Mushaf Mode — continuous flowing Arabic text */
+                  <div className="px-6 py-8 md:px-12">
+                    <p className="text-right leading-[3] text-foreground" dir="rtl" style={{ fontSize: `${settings.arabicFontSize}px`, fontFamily, wordSpacing: "8px", textAlign: "justify" }}>
+                      {ayahs.map((ayah) => {
+                        const text = settings.arabicScript === "indopak" && ayah.text_indopak ? ayah.text_indopak : ayah.text_uthmani || "";
+                        return (
+                          <span key={ayah.id} className="inline">
+                            {text}
+                            <span className="inline-flex items-center justify-center w-7 h-7 mx-1 rounded-md bg-primary/10 text-primary text-[10px] font-bold align-middle">{ayah.verse_number}</span>
+                          </span>
+                        );
+                      })}
+                    </p>
+                  </div>
+                ) : readingMode === "arabic" ? (
+                  /* Arabic Only Mode */
+                  <div className="divide-y divide-border/30">
+                    {ayahs.map((ayah) => {
+                      const text = settings.arabicScript === "indopak" && ayah.text_indopak ? ayah.text_indopak : ayah.text_uthmani || "";
+                      return (
+                        <div key={ayah.id} className="px-6 py-5 md:px-10 flex items-start gap-3">
+                          <span className="w-7 h-7 rounded-md bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-2">{ayah.verse_number}</span>
+                          <p className="flex-1 text-right leading-[2.6] text-foreground" dir="rtl" style={{ fontSize: `${settings.arabicFontSize}px`, fontFamily }}>{text}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : readingMode === "translation" ? (
+                  /* Translation Only Mode */
+                  <div className="divide-y divide-border/30">
+                    {ayahs.map((ayah) => {
+                      const english = ayah.translations?.find((t) => t.resource_id === 131)?.text || "";
+                      const bengali = ayah.translations?.find((t) => t.resource_id === 161)?.text || "";
+                      return (
+                        <div key={ayah.id} className="px-6 py-5 md:px-10">
+                          <span className="inline-flex items-center gap-1.5 mb-2">
+                            <span className="w-6 h-6 rounded bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">{ayah.verse_number}</span>
+                            <span className="text-[10px] text-muted">{ayah.verse_key}</span>
+                          </span>
+                          {english && <p className="text-foreground/80 leading-relaxed mb-2" style={{ fontSize: `${settings.translationFontSize}px` }} dangerouslySetInnerHTML={{ __html: english }} />}
+                          {bengali && <p className="text-foreground/60 leading-relaxed" style={{ fontSize: `${settings.translationFontSize}px`, fontFamily: "var(--font-bengali)" }} dangerouslySetInnerHTML={{ __html: bengali }} />}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : readingMode === "wordbyword" ? (
+                  /* Word by Word Mode */
+                  <div className="divide-y divide-border/30">
+                    {ayahs.map((ayah) => {
+                      const text = settings.arabicScript === "indopak" && ayah.text_indopak ? ayah.text_indopak : ayah.text_uthmani || "";
+                      const words = text.split(" ");
+                      return (
+                        <div key={ayah.id} className="px-4 py-5 md:px-8">
+                          <span className="inline-flex items-center gap-1.5 mb-4">
+                            <span className="w-6 h-6 rounded bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">{ayah.verse_number}</span>
+                          </span>
+                          <div className="flex flex-wrap gap-3 justify-center" dir="rtl">
+                            {words.map((word, wi) => (
+                              <div key={wi} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-surface-alt transition-colors">
+                                <span className="text-foreground" style={{ fontSize: `${Math.max(settings.arabicFontSize - 6, 20)}px`, fontFamily }}>{word}</span>
+                                <span className="text-[10px] text-muted">Word {wi + 1}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  /* Default: Ayah by Ayah Mode (with AyahCard) */
+                  ayahs.map((ayah, index) => (
                     <AyahCard key={ayah.id} ayah={ayah} index={index} surahId={surah.id} surahName={surah.name_simple} />
-                ))}
+                  ))
+                )}
               </>
             )}
           </div>
@@ -249,11 +322,65 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                     </div>
                   </div>
                 ) : (
-                  /* ═══ READING TAB — placeholder for future content ═══ */
-                  <div className="p-5 space-y-4">
-                    <div className="text-center py-12">
-                      <BookOpen size={32} className="mx-auto text-muted/30 mb-3" />
-                      <p className="text-sm text-muted">Reading features coming soon</p>
+                  /* ═══ READING TAB — Reading Mode Selector ═══ */
+                  <div className="p-5 space-y-6">
+                    {/* Header */}
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <BookOpen size={15} className="text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold">Reading Mode</h3>
+                        <p className="text-[10px] text-muted">Choose how you want to read</p>
+                      </div>
+                    </div>
+
+                    {/* Mode Options */}
+                    <div className="space-y-2">
+                      {([
+                        { id: "ayah" as const, title: "Ayah by Ayah", desc: "Arabic text with translations below each ayah", icon: "📖" },
+                        { id: "arabic" as const, title: "Arabic Only", desc: "Clean Arabic text without translations", icon: "🕋" },
+                        { id: "translation" as const, title: "Translation Only", desc: "English & Bengali translations only", icon: "🌐" },
+                        { id: "mushaf" as const, title: "Mushaf Mode", desc: "Continuous flowing text like a physical Quran", icon: "📓" },
+                        { id: "wordbyword" as const, title: "Word by Word", desc: "Each word displayed individually for learning", icon: "🔤" },
+                      ]).map((mode) => (
+                        <button
+                          key={mode.id}
+                          onClick={() => setReadingMode(mode.id)}
+                          className={cn(
+                            "w-full text-left px-4 py-3.5 rounded-xl border transition-all flex items-center gap-3",
+                            readingMode === mode.id
+                              ? "border-primary bg-primary/5 shadow-sm shadow-primary/10"
+                              : "border-border hover:border-primary/30 hover:bg-surface-alt"
+                          )}
+                        >
+                          <span className="text-xl">{mode.icon}</span>
+                          <div className="flex-1">
+                            <p className={cn("text-sm font-medium", readingMode === mode.id && "text-primary")}>{mode.title}</p>
+                            <p className="text-[10px] text-muted">{mode.desc}</p>
+                          </div>
+                          {readingMode === mode.id && (
+                            <span className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-3 h-3"><path fillRule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clipRule="evenodd" /></svg>
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Mode Preview */}
+                    <div className="card p-4 bg-surface-alt/50">
+                      <p className="text-[10px] text-muted uppercase tracking-wider font-semibold mb-2">Preview</p>
+                      {readingMode === "ayah" && <p className="text-xs text-muted">Full ayah cards with Arabic, English & Bengali translations, action buttons, and word highlighting.</p>}
+                      {readingMode === "arabic" && <p className="text-xs text-muted">Clean Arabic text with verse numbers. Perfect for those who can read Arabic fluently.</p>}
+                      {readingMode === "translation" && <p className="text-xs text-muted">Only translations displayed. Ideal for understanding the meaning without Arabic text.</p>}
+                      {readingMode === "mushaf" && <p className="text-xs text-muted">Continuous flowing Arabic text resembling a physical Quran page. No breaks between ayahs.</p>}
+                      {readingMode === "wordbyword" && <p className="text-xs text-muted">Each Arabic word displayed separately. Great for beginners learning to read the Quran.</p>}
+                    </div>
+
+                    {/* Quick tip */}
+                    <div className="card p-4 border-l-[3px] border-l-accent bg-accent/5">
+                      <p className="text-xs text-foreground">💡 Tip: Use "Ayah by Ayah" mode for the full experience with audio sync and word highlighting.</p>
                     </div>
                   </div>
                 )}
