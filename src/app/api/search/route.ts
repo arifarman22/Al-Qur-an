@@ -1,16 +1,11 @@
 import { searchSchema } from "@/lib/validations";
-import { success, handleError, tooManyRequests } from "@/lib/api-response";
-import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { success, handleError } from "@/lib/api-response";
 import { getCached, setCache } from "@/lib/cache";
 
 const BASE = "https://api.quran.com/api/v4";
 
 export async function GET(req: Request) {
   try {
-    const ip = getClientIp(req);
-    const rl = rateLimit(`search:${ip}`, 20, 60 * 1000);
-    if (!rl.allowed) return tooManyRequests(rl.retryAfterMs);
-
     const { searchParams } = new URL(req.url);
     const { q } = searchSchema.parse({ q: searchParams.get("q") || "" });
 
@@ -23,7 +18,7 @@ export async function GET(req: Request) {
     const data = await res.json();
     const results = data.search?.results || [];
 
-    setCache(cacheKey, results, 1000 * 60 * 30); // 30 min cache
+    setCache(cacheKey, results, 1000 * 60 * 30);
     return success(results);
   } catch (err) {
     return handleError(err);
