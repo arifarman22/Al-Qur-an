@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useSettingsStore } from "@/store/useSettingsStore";
-import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { Copy, Check, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -97,7 +98,8 @@ export default function DuasPage() {
   };
 
   return (
-    <QuranReaderLayout>
+    <main className="min-h-screen bg-surface-alt">
+      <Navbar />
       <div className="p-6 max-w-3xl mx-auto">
       
         <div className="mb-6">
@@ -139,6 +141,7 @@ export default function DuasPage() {
         </div>
       
       </div>
-    </QuranReaderLayout>
+    <Footer />
+    </main>
   );
 }

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { apiSearch, type SearchResultDTO } from "@/utils/api";
-import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -24,7 +25,8 @@ export default function SearchPage() {
   };
 
   return (
-    <QuranReaderLayout>
+    <main className="min-h-screen bg-surface-alt">
+      <Navbar />
       <div className="p-6 max-w-3xl mx-auto">
         <h1 className="text-xl font-bold mb-1">Search the Quran</h1>
         <p className="text-muted text-sm mb-6">Find ayahs by English translation text.</p>
@@ -66,6 +68,7 @@ export default function SearchPage() {
           </div>
         )}
       </div>
-    </QuranReaderLayout>
+    <Footer />
+    </main>
   );
 }

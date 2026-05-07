@@ -1,7 +1,8 @@
 "use client";
 
 import { useBookmarkStore } from "@/store/useBookmarkStore";
-import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -10,7 +11,8 @@ export default function BookmarksPage() {
   const { bookmarks, removeBookmark, updateNote } = useBookmarkStore();
 
   return (
-    <QuranReaderLayout>
+    <main className="min-h-screen bg-surface-alt">
+      <Navbar />
       <div className="p-6 max-w-3xl mx-auto">
         <h1 className="text-xl font-bold mb-1">Bookmarks</h1>
         <p className="text-muted text-sm mb-6">Your saved ayahs and notes.</p>
@@ -45,6 +47,7 @@ export default function BookmarksPage() {
           </div>
         )}
       </div>
-    </QuranReaderLayout>
+    <Footer />
+    </main>
   );
 }

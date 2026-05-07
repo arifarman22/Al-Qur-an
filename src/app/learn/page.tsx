@@ -2,7 +2,8 @@
 
 import { useLearningStore } from "@/store/useLearningStore";
 import { MODULES, LESSONS, getLessonsByModule } from "@/utils/lessons";
-import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle2, Lock, ChevronRight } from "lucide-react";
@@ -14,7 +15,8 @@ export default function LearnPage() {
   const overallProgress = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
   return (
-    <QuranReaderLayout>
+    <main className="min-h-screen bg-surface-alt">
+      <Navbar />
       <div className="p-6 max-w-3xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold mb-1">Learn Quran</h1>
@@ -79,6 +81,7 @@ export default function LearnPage() {
           })}
         </div>
       </div>
-    </QuranReaderLayout>
+    <Footer />
+    </main>
   );
 }

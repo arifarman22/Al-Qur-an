@@ -1,101 +1,123 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #10B981;
-  --color-primary-light: #D1FAE5;
-  --color-primary-dark: #059669;
-  --color-primary-fg: #FFFFFF;
-  --color-accent: #F59E0B;
+  /* ── Islamic Teal & Gold Palette ── */
+  --color-primary: #1B7A6E;
+  --color-primary-light: #E0F2EF;
+  --color-primary-dark: #145C53;
+  --color-accent: #C5963A;
+  --color-accent-light: #FDF3E0;
   --color-surface: var(--surface);
   --color-surface-alt: var(--surface-alt);
-  --color-surface-hover: var(--surface-hover);
   --color-border: var(--border-color);
   --color-muted: var(--muted-color);
-  --color-subtitle: var(--subtitle-color);
   --color-background: var(--bg);
   --color-foreground: var(--fg);
-  --color-sidebar: var(--sidebar-bg);
-  --color-icon-sidebar: var(--icon-sidebar-bg);
-  --color-card: var(--card-bg);
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-arabic: var(--font-kfgq), "Amiri", serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-arabic: "Amiri", serif;
 }
 
-/* Dark theme (default — matching QuranMazid exactly) */
+/* ── Light Mode — Warm Parchment ── */
 :root {
-  --bg: #0D1117;
-  --fg: #E6EDF3;
-  --surface: #161B22;
-  --surface-alt: #0D1117;
-  --surface-hover: #1C2128;
-  --card-bg: #161B22;
-  --border-color: #21262D;
-  --muted-color: #7D8590;
-  --subtitle-color: #8B949E;
-  --sidebar-bg: #010409;
-  --icon-sidebar-bg: #010409;
-  color-scheme: dark;
-}
-
-/* Light theme */
-.light {
-  --bg: #FFFFFF;
-  --fg: #1F2328;
+  --bg: #FAF8F5;
+  --fg: #1C1917;
   --surface: #FFFFFF;
-  --surface-alt: #F6F8FA;
-  --surface-hover: #F3F4F6;
-  --card-bg: #FFFFFF;
-  --border-color: #D0D7DE;
-  --muted-color: #656D76;
-  --subtitle-color: #656D76;
-  --sidebar-bg: #F6F8FA;
-  --icon-sidebar-bg: #EAEEF2;
+  --surface-alt: #F5F1EC;
+  --border-color: #E7E0D8;
+  --muted-color: #78716C;
   color-scheme: light;
 }
 
+/* ── Dark Mode ── */
+.dark {
+  --bg: #0C1220;
+  --fg: #E8E4DF;
+  --surface: #1A2332;
+  --surface-alt: #111827;
+  --border-color: #2D3A4A;
+  --muted-color: #9CA3AF;
+  color-scheme: dark;
+}
+
+/* ── Base ── */
 @layer base {
   * {
-    border-color: var(--border-color);
+    @apply border-border;
   }
+
   body {
-    background-color: var(--bg);
-    color: var(--fg);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    @apply bg-background text-foreground font-sans antialiased;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground;
+  }
+
+  a {
+    @apply transition-colors;
+  }
+
   input, textarea, select {
-    background-color: var(--surface-hover);
-    color: var(--fg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
+    @apply bg-surface text-foreground placeholder:text-muted/50;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  input::placeholder, textarea::placeholder {
-    color: var(--muted-color);
+
+  .dark input,
+  .dark textarea,
+  .dark select {
+    @apply bg-[#111827] text-[#E8E4DF] border-[#2D3A4A];
   }
-  input:focus, textarea:focus, select:focus {
-    border-color: var(--color-primary);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: #6B7280;
   }
+
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    border-color: #1B7A6E;
+    box-shadow: 0 0 0 2px rgba(27, 122, 110, 0.15);
+  }
+
   ::selection {
-    background-color: rgba(16, 185, 129, 0.2);
+    @apply bg-primary/15 text-foreground;
+  }
+
+  .dark ::selection {
+    background: rgba(27, 122, 110, 0.3);
+  }
+
+  img {
+    @apply transition-opacity;
+  }
+
+  .dark img {
+    opacity: 0.92;
   }
 }
 
+/* ── Utilities ── */
 @layer utilities {
   .card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    transition: border-color 0.15s ease;
+    @apply bg-surface border border-border rounded-2xl;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
+
+  .dark .card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
   .card:hover {
-    border-color: rgba(16, 185, 129, 0.3);
+    @apply border-primary/25;
   }
+
+  .dark .card:hover {
+    border-color: rgba(27, 122, 110, 0.35);
+    box-shadow: 0 4px 12px rgba(27, 122, 110, 0.06);
+  }
+
   .line-clamp-6 {
     display: -webkit-box;
     -webkit-line-clamp: 6;
@@ -104,63 +126,148 @@
   }
 }
 
-/* Scrollbar — thin, subtle */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(125, 133, 144, 0.3); border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(125, 133, 144, 0.5); }
+/* ── Smooth Scroll ── */
+html {
+  scroll-behavior: smooth;
+}
 
-/* Range inputs */
+/* ── Islamic Geometric Background ── */
+.islamic-geo-bg {
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%231B7A6E' stroke-width='0.6'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3Cpath d='M40 12L68 40L40 68L12 40Z'/%3E%3Ccircle cx='40' cy='40' r='14'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 80px 80px;
+}
+
+/* ── Floating Animations ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-18px) scale(1.04); }
+}
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-12px) scale(1.02); }
+}
+.animate-float {
+  animation: float 7s ease-in-out infinite;
+}
+.animate-float-delayed {
+  animation: float-delayed 9s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/15 rounded-full;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(27, 122, 110, 0.25);
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/30;
+}
+
+/* ── Dark mode overrides ── */
+.dark header {
+  background: rgba(12, 18, 32, 0.88);
+  backdrop-filter: blur(12px);
+}
+
+.dark .fixed .bg-black\/30 {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.dark button {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dark .bg-primary:hover {
+  background-color: #145C53;
+}
+
+.dark .bg-primary\/10 {
+  background: rgba(27, 122, 110, 0.15);
+}
+
+.dark .fixed.bottom-0 {
+  background: rgba(12, 18, 32, 0.95);
+  backdrop-filter: blur(12px);
+}
+
+/* ── Range inputs ── */
 input[type="range"] {
-  appearance: none;
-  -webkit-appearance: none;
-  background: var(--border-color);
-  border-radius: 9999px;
-  cursor: pointer;
+  @apply appearance-none bg-border rounded-full cursor-pointer;
   height: 4px;
-  border: none;
-  padding: 0;
-  box-shadow: none;
 }
 input[type="range"]::-webkit-slider-thumb {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  background: var(--color-primary);
-  border-radius: 9999px;
-  cursor: pointer;
-  margin-top: -6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  @apply appearance-none w-3.5 h-3.5 bg-primary rounded-full cursor-pointer;
+  margin-top: -5px;
+  transition: transform 0.1s ease;
 }
-input[type="range"]:focus {
-  box-shadow: none;
-  outline: none;
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+.dark input[type="range"] {
+  background: #2D3A4A;
 }
 
-/* Smooth scroll */
-html { scroll-behavior: smooth; }
-
-/* Ayah verse number badge — matching QuranMazid's octagonal shape */
-.verse-badge {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-primary);
-  background: rgba(16, 185, 129, 0.08);
-  border: 1.5px solid rgba(16, 185, 129, 0.25);
-  border-radius: 8px;
-  transform: rotate(45deg);
+/* ── Prose ── */
+.prose {
+  @apply text-muted;
 }
-.verse-badge span {
-  transform: rotate(-45deg);
+.prose h2, .prose h3 {
+  @apply text-foreground font-semibold mt-4 mb-2;
+}
+.prose p {
+  @apply mb-3;
+}
+.prose a {
+  @apply text-primary underline;
+}
+.dark .prose {
+  color: #9CA3AF;
+}
+.dark .prose h2,
+.dark .prose h3 {
+  color: #E8E4DF;
 }
 
-/* Surah header gradient overlay */
-.surah-header-gradient {
-  background: linear-gradient(180deg, transparent 0%, rgba(13, 17, 23, 0.6) 50%, rgba(13, 17, 23, 0.95) 100%);
+/* ── Skeleton pulse dark ── */
+.dark .animate-pulse {
+  background: linear-gradient(90deg, #1A2332 25%, #243044 50%, #1A2332 75%);
+  background-size: 200% 100%;
+  animation: pulse-dark 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dark {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Toast dark ── */
+.dark [data-sonner-toaster] {
+  --normal-bg: #1A2332;
+  --normal-border: #2D3A4A;
+  --normal-text: #E8E4DF;
+}
+
+/* ── Theme transition ── */
+html.dark {
+  background: #0C1220;
+}
+
+/* ── Body background — light mode Islamic pattern ── */
+body {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%231B7A6E' stroke-width='0.4' opacity='0.08'%3E%3Cpath d='M60 0L120 60L60 120L0 60Z'/%3E%3Cpath d='M60 15L105 60L60 105L15 60Z'/%3E%3Cpath d='M60 30L90 60L60 90L30 60Z'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Ccircle cx='60' cy='60' r='8'/%3E%3Cpath d='M60 0V120M0 60H120'/%3E%3Cpath d='M60 40C60 40 50 50 50 60C50 70 60 80 60 80C60 80 70 70 70 60C70 50 60 40 60 40Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 120px;
+  background-attachment: fixed;
+}
+
+.dark body {
+  background-image: none;
 }

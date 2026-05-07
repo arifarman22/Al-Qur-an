@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { apiGetSurahs, type SurahDTO } from "@/utils/api";
 import { useMemorizationStore } from "@/store/useMemorizationStore";
-import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle2, Clock, Circle } from "lucide-react";
@@ -35,7 +36,8 @@ export default function MemorizePage() {
     : surahs;
 
   return (
-    <QuranReaderLayout>
+    <main className="min-h-screen bg-surface-alt">
+      <Navbar />
       <div className="p-6 max-w-3xl mx-auto">
         <h1 className="text-xl font-bold mb-1">Memorization Tracker</h1>
         <p className="text-muted text-sm mb-6">Track your Quran memorization (Hifz).</p>
@@ -85,6 +87,7 @@ export default function MemorizePage() {
           </div>
         )}
       </div>
-    </QuranReaderLayout>
+    <Footer />
+    </main>
   );
 }

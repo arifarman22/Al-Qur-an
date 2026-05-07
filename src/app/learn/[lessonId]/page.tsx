@@ -4,7 +4,8 @@ import { use } from "react";
 import { useLearningStore } from "@/store/useLearningStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { getLessonById, getNextLesson } from "@/utils/lessons";
-import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, CheckCircle2, BookOpen } from "lucide-react";
@@ -18,10 +19,12 @@ export default function LessonPage({ params }: { params: Promise<{ lessonId: str
   const lesson = getLessonById(lessonId);
   const nextLesson = lesson ? getNextLesson(lesson.id) : undefined;
   const completed = isCompleted(lessonId);
-  const fontFamily = arabicFont === "kfgq" ? "var(--font-kfgq)" : arabicFont === "amiri" ? "var(--font-amiri)" : "var(--font-scheherazade)";
+  const fontFamily = arabicFont === "amiri" ? "var(--font-amiri)" : "var(--font-scheherazade)";
 
   if (!lesson) return (
-    <QuranReaderLayout><div className="p-6 text-center text-muted py-20">Lesson not found.</div></QuranReaderLayout>
+    <main className="min-h-screen bg-surface-alt">
+      <Navbar /><div className="p-6 text-center text-muted py-20">Lesson not found.</div><Footer />
+    </main>
   );
 
   const handleComplete = () => {
@@ -30,7 +33,8 @@ export default function LessonPage({ params }: { params: Promise<{ lessonId: str
   };
 
   return (
-    <QuranReaderLayout>
+    <main className="min-h-screen bg-surface-alt">
+      <Navbar />
       <div className="p-6 max-w-3xl mx-auto">
         <Link href="/learn" className="inline-flex items-center gap-1 text-sm text-muted hover:text-foreground mb-6 transition-colors">
           <ChevronLeft size={16} />Back to Lessons
@@ -111,6 +115,7 @@ export default function LessonPage({ params }: { params: Promise<{ lessonId: str
           </div>
         </div>
       </div>
-    </QuranReaderLayout>
+    <Footer />
+    </main>
   );
 }

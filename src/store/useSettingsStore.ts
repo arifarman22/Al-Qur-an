@@ -2,12 +2,12 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface SettingsState {
-  arabicFont: "kfgq" | "amiri" | "scheherazade";
+  arabicFont: "amiri" | "scheherazade";
   arabicFontSize: number;
   translationFontSize: number;
   theme: "light" | "dark";
   arabicScript: "uthmani" | "indopak";
-  setArabicFont: (font: "kfgq" | "amiri" | "scheherazade") => void;
+  setArabicFont: (font: "amiri" | "scheherazade") => void;
   setArabicFontSize: (size: number) => void;
   setTranslationFontSize: (size: number) => void;
   setTheme: (theme: "light" | "dark") => void;
@@ -18,10 +18,10 @@ interface SettingsState {
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
-      arabicFont: "kfgq",
+      arabicFont: "amiri",
       arabicFontSize: 32,
-      translationFontSize: 15,
-      theme: "dark",
+      translationFontSize: 16,
+      theme: "light",
       arabicScript: "uthmani",
       setArabicFont: (font) => set({ arabicFont: font }),
       setArabicFontSize: (size) => set({ arabicFontSize: size }),

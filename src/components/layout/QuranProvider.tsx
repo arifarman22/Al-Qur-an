@@ -10,16 +10,13 @@ export default function QuranProvider({ children }: { children: React.ReactNode 
   const [splashDone, setSplashDone] = useState(false);
 
   useEffect(() => {
-    // Clean up old auth data from localStorage
     localStorage.removeItem("quran-auth");
-
-    const root = document.documentElement;
-    root.classList.toggle("light", theme === "light");
-    root.classList.toggle("dark", theme === "dark");
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    document.documentElement.classList.remove("light");
   }, [theme]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setSplashDone(true), 1800);
+    const timer = setTimeout(() => setSplashDone(true), 1500);
     return () => clearTimeout(timer);
   }, []);
 
