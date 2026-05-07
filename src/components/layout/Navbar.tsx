@@ -5,13 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { cn } from "@/utils/utils";
-import { Moon, Sun, Settings, BookOpen, Search, Bookmark, GraduationCap, Heart, Menu, X } from "lucide-react";
+import { Moon, Sun, Settings, BookOpen, Search, Bookmark, GraduationCap, Heart, Menu, X, Clock } from "lucide-react";
 
 const navItems = [
   { name: "Home", href: "/", icon: BookOpen },
   { name: "Read Quran", href: "/surah/1", icon: BookOpen },
+  { name: "Prayer Times", href: "/prayer-times", icon: Clock },
   { name: "Search", href: "/search", icon: Search },
-  { name: "Bookmarks", href: "/bookmarks", icon: Bookmark },
   { name: "Learn", href: "/learn", icon: GraduationCap },
 ];
 
