@@ -1,34 +1,39 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #1B9B7A;
-  --color-primary-light: #E0F7F1;
-  --color-primary-dark: #14705A;
-  --color-accent: #D4A843;
+  --color-primary: #10B981;
+  --color-primary-light: #D1FAE5;
+  --color-primary-dark: #059669;
+  --color-primary-fg: #FFFFFF;
+  --color-accent: #F59E0B;
   --color-surface: var(--surface);
   --color-surface-alt: var(--surface-alt);
   --color-surface-hover: var(--surface-hover);
   --color-border: var(--border-color);
   --color-muted: var(--muted-color);
+  --color-subtitle: var(--subtitle-color);
   --color-background: var(--bg);
   --color-foreground: var(--fg);
   --color-sidebar: var(--sidebar-bg);
   --color-icon-sidebar: var(--icon-sidebar-bg);
+  --color-card: var(--card-bg);
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-arabic: "Amiri", serif;
+  --font-arabic: var(--font-kfgq), "Amiri", serif;
 }
 
-/* Dark theme by default (matching QuranMazid) */
+/* Dark theme (default — matching QuranMazid exactly) */
 :root {
-  --bg: #0F1419;
-  --fg: #E7E9EA;
-  --surface: #1C2128;
-  --surface-alt: #161B22;
-  --surface-hover: #252C35;
-  --border-color: #2D3640;
-  --muted-color: #8B949E;
-  --sidebar-bg: #161B22;
-  --icon-sidebar-bg: #0D1117;
+  --bg: #0D1117;
+  --fg: #E6EDF3;
+  --surface: #161B22;
+  --surface-alt: #0D1117;
+  --surface-hover: #1C2128;
+  --card-bg: #161B22;
+  --border-color: #21262D;
+  --muted-color: #7D8590;
+  --subtitle-color: #8B949E;
+  --sidebar-bg: #010409;
+  --icon-sidebar-bg: #010409;
   color-scheme: dark;
 }
 
@@ -38,9 +43,11 @@
   --fg: #1F2328;
   --surface: #FFFFFF;
   --surface-alt: #F6F8FA;
-  --surface-hover: #F0F2F5;
-  --border-color: #D8DEE4;
+  --surface-hover: #F3F4F6;
+  --card-bg: #FFFFFF;
+  --border-color: #D0D7DE;
   --muted-color: #656D76;
+  --subtitle-color: #656D76;
   --sidebar-bg: #F6F8FA;
   --icon-sidebar-bg: #EAEEF2;
   color-scheme: light;
@@ -58,34 +65,36 @@
     -moz-osx-font-smoothing: grayscale;
   }
   input, textarea, select {
-    background-color: var(--surface-alt);
+    background-color: var(--surface-hover);
     color: var(--fg);
     border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    transition: border-color 0.15s ease;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   input::placeholder, textarea::placeholder {
-    color: color-mix(in srgb, var(--muted-color) 50%, transparent);
+    color: var(--muted-color);
   }
   input:focus, textarea:focus, select:focus {
     border-color: var(--color-primary);
     outline: none;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 20%, transparent);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
   }
   ::selection {
-    background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+    background-color: rgba(16, 185, 129, 0.2);
   }
 }
 
 @layer utilities {
   .card {
-    background-color: var(--surface);
+    background-color: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    border-radius: 12px;
+    transition: border-color 0.15s ease;
   }
   .card:hover {
-    border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+    border-color: rgba(16, 185, 129, 0.3);
   }
   .line-clamp-6 {
     display: -webkit-box;
@@ -95,11 +104,11 @@
   }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 5px; }
+/* Scrollbar — thin, subtle */
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--muted-color) 20%, transparent); border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--muted-color) 40%, transparent); }
+::-webkit-scrollbar-thumb { background: rgba(125, 133, 144, 0.3); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(125, 133, 144, 0.5); }
 
 /* Range inputs */
 input[type="range"] {
@@ -110,21 +119,48 @@ input[type="range"] {
   cursor: pointer;
   height: 4px;
   border: none;
+  padding: 0;
   box-shadow: none;
 }
 input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   background: var(--color-primary);
   border-radius: 9999px;
   cursor: pointer;
-  margin-top: -5px;
+  margin-top: -6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 input[type="range"]:focus {
   box-shadow: none;
+  outline: none;
 }
 
 /* Smooth scroll */
 html { scroll-behavior: smooth; }
+
+/* Ayah verse number badge — matching QuranMazid's octagonal shape */
+.verse-badge {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1.5px solid rgba(16, 185, 129, 0.25);
+  border-radius: 8px;
+  transform: rotate(45deg);
+}
+.verse-badge span {
+  transform: rotate(-45deg);
+}
+
+/* Surah header gradient overlay */
+.surah-header-gradient {
+  background: linear-gradient(180deg, transparent 0%, rgba(13, 17, 23, 0.6) 50%, rgba(13, 17, 23, 0.95) 100%);
+}
