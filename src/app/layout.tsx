@@ -8,7 +8,7 @@ import QuranProvider from "@/components/layout/QuranProvider";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const amiri = Amiri({ weight: ["400", "700"], subsets: ["arabic"], variable: "--font-amiri", display: "swap" });
 const scheherazade = Scheherazade_New({ weight: ["400", "700"], subsets: ["arabic"], variable: "--font-scheherazade", display: "swap" });
-const kalpurush = localFont({ src: "../public/fonts/kalpurush.woff2", variable: "--font-kalpurush", display: "swap" });
+const kalpurush = localFont({ src: "../../public/fonts/kalpurush.woff2", variable: "--font-kalpurush", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Al-Quran | The Noble Quran",
