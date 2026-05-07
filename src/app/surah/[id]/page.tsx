@@ -6,6 +6,7 @@ import { useSettingsStore } from "@/store/useSettingsStore";
 import { usePlaybackStore } from "@/store/usePlaybackStore";
 import { useBookmarkStore } from "@/store/useBookmarkStore";
 import AyahCard from "@/components/quran/AyahCard";
+import MushafStyleSelector from "@/components/quran/MushafStyleSelector";
 import { cn } from "@/utils/utils";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -26,6 +27,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
   const [rightPanelOpen, setRightPanelOpen] = useState(true);
   const [rightTab, setRightTab] = useState<"translation" | "reading">("translation");
   const [readingMode, setReadingMode] = useState<"ayah" | "arabic" | "translation" | "mushaf" | "wordbyword">("ayah");
+  const [mushafStyle, setMushafStyle] = useState("unicode");
   const [surahSearch, setSurahSearch] = useState("");
 
   const fontFamily = settings.arabicFont === "amiri" ? "var(--font-amiri)" : "var(--font-scheherazade)";
@@ -338,11 +340,11 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                     {/* Mode Options */}
                     <div className="space-y-2">
                       {([
-                        { id: "ayah" as const, title: "Ayah by Ayah", desc: "Arabic text with translations below each ayah", icon: "📖" },
-                        { id: "arabic" as const, title: "Arabic Only", desc: "Clean Arabic text without translations", icon: "🕋" },
-                        { id: "translation" as const, title: "Translation Only", desc: "English & Bengali translations only", icon: "🌐" },
-                        { id: "mushaf" as const, title: "Mushaf Mode", desc: "Continuous flowing text like a physical Quran", icon: "📓" },
-                        { id: "wordbyword" as const, title: "Word by Word", desc: "Each word displayed individually for learning", icon: "🔤" },
+                        { id: "ayah" as const, title: "Ayah by Ayah", desc: "Arabic text with translations below each ayah", icon: "book" },
+                        { id: "arabic" as const, title: "Arabic Only", desc: "Clean Arabic text without translations", icon: "mosque" },
+                        { id: "translation" as const, title: "Translation Only", desc: "English & Bengali translations only", icon: "globe" },
+                        { id: "mushaf" as const, title: "Mushaf Mode", desc: "Continuous flowing text like a physical Quran", icon: "quran" },
+                        { id: "wordbyword" as const, title: "Word by Word", desc: "Each word displayed individually for learning", icon: "text" },
                       ]).map((mode) => (
                         <button
                           key={mode.id}
@@ -354,7 +356,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                               : "border-border hover:border-primary/30 hover:bg-surface-alt"
                           )}
                         >
-                          <span className="text-xl">{mode.icon}</span>
+                          <span className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border bg-surface-alt border-border text-muted"><BookOpen size={16} /></span>
                           <div className="flex-1">
                             <p className={cn("text-sm font-medium", readingMode === mode.id && "text-primary")}>{mode.title}</p>
                             <p className="text-[10px] text-muted">{mode.desc}</p>
@@ -368,6 +370,14 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                       ))}
                     </div>
 
+
+                    {/* Mushaf Style Selector */}
+                    {readingMode === "mushaf" && (
+                      <div className="card p-4">
+                        <MushafStyleSelector selected={mushafStyle} onSelect={setMushafStyle} />
+                      </div>
+                    )}
+
                     {/* Mode Preview */}
                     <div className="card p-4 bg-surface-alt/50">
                       <p className="text-[10px] text-muted uppercase tracking-wider font-semibold mb-2">Preview</p>
@@ -380,7 +390,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
 
                     {/* Quick tip */}
                     <div className="card p-4 border-l-[3px] border-l-accent bg-accent/5">
-                      <p className="text-xs text-foreground">💡 Tip: Use "Ayah by Ayah" mode for the full experience with audio sync and word highlighting.</p>
+                      <p className="text-xs text-foreground">Tip: Use "Ayah by Ayah" mode for the full experience with audio sync and word highlighting.</p>
                     </div>
                   </div>
                 )}
