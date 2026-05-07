@@ -137,19 +137,53 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                 )}
 
                 {readingMode === "mushaf" ? (
-                  /* Mushaf Mode — continuous flowing Arabic text */
-                  <div className="px-6 py-8 md:px-12">
-                    <p className="text-right leading-[3] text-foreground" dir="rtl" style={{ fontSize: `${settings.arabicFontSize}px`, fontFamily, wordSpacing: "8px", textAlign: "justify" }}>
-                      {ayahs.map((ayah) => {
-                        const text = settings.arabicScript === "indopak" && ayah.text_indopak ? ayah.text_indopak : ayah.text_uthmani || "";
-                        return (
-                          <span key={ayah.id} className="inline">
-                            {text}
-                            <span className="inline-flex items-center justify-center w-7 h-7 mx-1 rounded-md bg-primary/10 text-primary text-[10px] font-bold align-middle">{ayah.verse_number}</span>
-                          </span>
-                        );
-                      })}
-                    </p>
+                  /* Mushaf Mode — renders based on selected mushafStyle */
+                  <div className="px-4 py-6 md:px-8 lg:px-12">
+                    {/* Mushaf header */}
+                    <div className="text-center mb-6 pb-4 border-b border-border/30">
+                      <p className="text-[10px] text-primary font-semibold uppercase tracking-wider">
+                        {mushafStyle === "unicode" && "Unicode Text Mushaf"}
+                        {mushafStyle === "hafezi" && "Hafezi Quran Mushaf"}
+                        {mushafStyle === "newmadani" && "New Madani Mushaf"}
+                        {mushafStyle === "nurani" && "Nurani Mushaf"}
+                        {mushafStyle === "qaloon" && "Qaloon Mushaf"}
+                        {mushafStyle === "shemerly" && "Shemerly Mushaf"}
+                        {mushafStyle === "warsh" && "Warsh Mushaf"}
+                        {mushafStyle === "tanzil" && "Tanzil Mushaf"}
+                      </p>
+                    </div>
+                    <div className={cn(
+                      "rounded-2xl border border-border/50 p-6 md:p-10",
+                      "bg-gradient-to-b from-surface to-surface-alt"
+                    )}>
+                      <p
+                        className="text-right leading-[3.2] text-foreground"
+                        dir="rtl"
+                        style={{
+                          fontSize: `${settings.arabicFontSize}px`,
+                          fontFamily: ["newmadani","qaloon","warsh"].includes(mushafStyle) ? "var(--font-scheherazade)" : "var(--font-amiri)",
+                          wordSpacing: "10px",
+                          textAlign: "justify",
+                          lineHeight: mushafStyle === "hafezi" ? "3.5" : "3.2",
+                        }}
+                      >
+                        {ayahs.map((ayah) => {
+                          const text = settings.arabicScript === "indopak" && ayah.text_indopak ? ayah.text_indopak : ayah.text_uthmani || "";
+                          return (
+                            <span key={ayah.id} className="inline">
+                              {text}
+                              <span className="inline-flex items-center justify-center w-7 h-7 mx-1.5 rounded-full bg-primary/10 text-primary text-[9px] font-bold align-middle border border-primary/20">
+                                {ayah.verse_number}
+                              </span>
+                            </span>
+                          );
+                        })}
+                      </p>
+                    </div>
+                    {/* Page footer */}
+                    <div className="text-center mt-4 pt-3 border-t border-border/30">
+                      <p className="text-[10px] text-muted">{surah?.name_simple} · {ayahs.length} Ayahs</p>
+                    </div>
                   </div>
                 ) : readingMode === "arabic" ? (
                   /* Arabic Only Mode */
