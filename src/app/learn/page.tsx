@@ -5,9 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { apiGetLearningProgress, type LearningProgressDTO } from "@/utils/api";
 import { MODULES, LESSONS, getLessonsByModule } from "@/utils/lessons";
-import Container from "@/components/ui/Container";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle2, Lock, ChevronRight } from "lucide-react";
@@ -31,16 +29,15 @@ export default function LearnPage() {
       .finally(() => setLoading(false));
   }, [user, authLoading, router]);
 
-  if (authLoading || !user) return <div className="min-h-screen bg-surface-alt" />;
+  if (authLoading || !user) return <div className="h-screen bg-background" />;
 
   const completedCount = Object.keys(progress).length;
   const totalLessons = LESSONS.length;
   const overallProgress = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
   return (
-    <main className="min-h-screen bg-surface-alt">
-      <Navbar />
-      <Container className="py-8 max-w-3xl">
+    <QuranReaderLayout>
+      <div className="p-6 max-w-3xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold mb-1">Learn Quran</h1>
           <p className="text-muted text-sm">Step-by-step course from Arabic basics to Quran reading.</p>
@@ -119,8 +116,7 @@ export default function LearnPage() {
             );
           })}
         </div>
-      </Container>
-      <Footer />
-    </main>
+      </div>
+    </QuranReaderLayout>
   );
 }

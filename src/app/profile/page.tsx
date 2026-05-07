@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { apiGetProfile, apiUpdateProfile, apiChangePassword, type ProfileDTO } from "@/utils/api";
-import Container from "@/components/ui/Container";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
 import { User, Mail, Calendar, Bookmark, BookOpen, Lock, Save, Loader2, AlertCircle, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -37,7 +35,7 @@ export default function ProfilePage() {
       .finally(() => setLoading(false));
   }, [user, authLoading, router]);
 
-  if (authLoading || !user) return <div className="min-h-screen bg-surface-alt" />;
+  if (authLoading || !user) return <div className="h-screen bg-background" />;
 
   const handleSaveName = async () => {
     if (!name.trim() || name === profile?.name) return;
@@ -66,9 +64,9 @@ export default function ProfilePage() {
   };
 
   return (
-    <main className="min-h-screen bg-surface-alt">
-      <Navbar />
-      <Container className="py-8 max-w-2xl">
+    <QuranReaderLayout>
+      <div className="p-6 max-w-3xl mx-auto">
+      
         <h1 className="text-2xl font-bold mb-8">Profile</h1>
 
         {loading ? (
@@ -167,8 +165,8 @@ export default function ProfilePage() {
             </motion.div>
           </div>
         )}
-      </Container>
-      <Footer />
-    </main>
+      
+      </div>
+    </QuranReaderLayout>
   );
 }

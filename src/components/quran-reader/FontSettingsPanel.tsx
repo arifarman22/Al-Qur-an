@@ -30,10 +30,10 @@ export default function FontSettingsPanel({ isOpen, onClose }: Props) {
         <div className="space-y-2">
           <label className="text-xs font-medium text-muted uppercase tracking-wider">Arabic Font</label>
           <div className="space-y-2">
-            {([["amiri", "Amiri Quran"], ["scheherazade", "Scheherazade New"]] as const).map(([key, label]) => (
+            {([["kfgq", "KFGQ Hafs Uthmanic"], ["amiri", "Amiri Quran"], ["scheherazade", "Scheherazade New"]] as const).map(([key, label]) => (
               <button key={key} onClick={() => s.setArabicFont(key)}
                 className={cn("w-full text-left px-4 py-3 rounded-lg border transition-colors", s.arabicFont === key ? "border-primary bg-primary/10" : "border-border hover:border-primary/30")}>
-                <p className="text-lg mb-0.5" dir="rtl" style={{ fontFamily: key === "amiri" ? "var(--font-amiri)" : "var(--font-scheherazade)" }}>
+                <p className="text-lg mb-0.5" dir="rtl" style={{ fontFamily: key === "kfgq" ? "var(--font-kfgq)" : key === "amiri" ? "var(--font-amiri)" : "var(--font-scheherazade)" }}>
                   بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                 </p>
                 <p className="text-xs text-muted">{label}</p>

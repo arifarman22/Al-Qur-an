@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { apiGetSurahs, apiGetMemorization, apiUpdateMemorization, type SurahDTO, type MemorizationDTO } from "@/utils/api";
-import Container from "@/components/ui/Container";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Loader2, CheckCircle2, Clock, Circle } from "lucide-react";
@@ -47,7 +45,7 @@ export default function MemorizePage() {
       .finally(() => setLoading(false));
   }, [user, authLoading, router]);
 
-  if (authLoading || !user) return <div className="min-h-screen bg-surface-alt" />;
+  if (authLoading || !user) return <div className="h-screen bg-background" />;
 
   const handleStatusChange = async (surah: SurahDTO, status: string) => {
     try {
@@ -65,9 +63,9 @@ export default function MemorizePage() {
     : surahs;
 
   return (
-    <main className="min-h-screen bg-surface-alt">
-      <Navbar />
-      <Container className="py-8 max-w-3xl">
+    <QuranReaderLayout>
+      <div className="p-6 max-w-3xl mx-auto">
+      
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-1">Memorization Tracker</h1>
           <p className="text-muted text-sm">Track your Quran memorization journey (Hifz).</p>
@@ -146,8 +144,8 @@ export default function MemorizePage() {
             })}
           </div>
         )}
-      </Container>
-      <Footer />
-    </main>
+      
+      </div>
+    </QuranReaderLayout>
   );
 }

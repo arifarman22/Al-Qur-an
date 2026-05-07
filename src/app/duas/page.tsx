@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { useSettingsStore } from "@/store/useSettingsStore";
-import Container from "@/components/ui/Container";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
 import { Copy, Check, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -99,9 +97,9 @@ export default function DuasPage() {
   };
 
   return (
-    <main className="min-h-screen bg-surface-alt">
-      <Navbar />
-      <Container className="py-8 max-w-3xl">
+    <QuranReaderLayout>
+      <div className="p-6 max-w-3xl mx-auto">
+      
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-1">Quranic Duas</h1>
           <p className="text-muted text-sm">Essential supplications from the Holy Quran.</p>
@@ -139,8 +137,8 @@ export default function DuasPage() {
             </motion.div>
           ))}
         </div>
-      </Container>
-      <Footer />
-    </main>
+      
+      </div>
+    </QuranReaderLayout>
   );
 }

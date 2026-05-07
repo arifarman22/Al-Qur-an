@@ -105,7 +105,7 @@ export default function AyahItem({ ayah, surahId, surahName, bookmarkId, onBookm
 
       {/* Arabic Text */}
       <p className="text-right leading-[2.2] mb-4" dir="rtl"
-        style={{ fontSize: `${arabicFontSize}px`, fontFamily: arabicFont === "amiri" ? "var(--font-amiri)" : "var(--font-scheherazade)" }}>
+        style={{ fontSize: `${arabicFontSize}px`, fontFamily: arabicFont === "kfgq" ? "var(--font-kfgq)" : arabicFont === "amiri" ? "var(--font-amiri)" : "var(--font-scheherazade)" }}>
         {arabicText}
       </p>
 

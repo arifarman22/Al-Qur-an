@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Container from "@/components/ui/Container";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
 import { RotateCcw, Plus, Minus } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -43,9 +41,9 @@ export default function TasbihPage() {
   const selectPreset = (i: number) => { setSelected(i); setCount(0); };
 
   return (
-    <main className="min-h-screen bg-surface-alt">
-      <Navbar />
-      <Container className="py-8 max-w-lg">
+    <QuranReaderLayout>
+      <div className="p-6 max-w-3xl mx-auto">
+      
         <h1 className="text-2xl font-bold mb-2">Tasbih Counter</h1>
         <p className="text-muted text-sm mb-8">Digital dhikr counter for daily remembrance.</p>
 
@@ -118,8 +116,8 @@ export default function TasbihPage() {
         </motion.div>
 
         <p className="text-center text-xs text-muted">Lifetime total: {totalAll.toLocaleString()} dhikr</p>
-      </Container>
-      <Footer />
-    </main>
+      
+      </div>
+    </QuranReaderLayout>
   );
 }

@@ -5,9 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { apiCompleteLesson, apiGetLearningProgress } from "@/utils/api";
 import { getLessonById, getNextLesson } from "@/utils/lessons";
-import Container from "@/components/ui/Container";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, CheckCircle2, Loader2, BookOpen } from "lucide-react";
@@ -33,12 +31,11 @@ export default function LessonPage({ params }: { params: Promise<{ lessonId: str
     }).catch(() => {});
   }, [user, authLoading, router, lessonId]);
 
-  if (authLoading || !user) return <div className="min-h-screen bg-surface-alt" />;
+  if (authLoading || !user) return <div className="h-screen bg-background" />;
   if (!lesson) return (
-    <main className="min-h-screen bg-surface-alt">
-      <Navbar />
-      <Container className="py-8"><p className="text-center text-muted py-20">Lesson not found.</p></Container>
-    </main>
+    <QuranReaderLayout>
+      <div className="p-6"><p className="text-center text-muted py-20">Lesson not found.</p></div>
+    </QuranReaderLayout>
   );
 
   const handleComplete = async () => {
@@ -51,12 +48,11 @@ export default function LessonPage({ params }: { params: Promise<{ lessonId: str
     finally { setCompleting(false); }
   };
 
-  const fontFamily = arabicFont === "amiri" ? "var(--font-amiri)" : "var(--font-scheherazade)";
+  const fontFamily = arabicFont === "kfgq" ? "var(--font-kfgq)" : arabicFont === "amiri" ? "var(--font-amiri)" : "var(--font-scheherazade)";
 
   return (
-    <main className="min-h-screen bg-surface-alt">
-      <Navbar />
-      <Container className="py-8 max-w-3xl">
+    <QuranReaderLayout>
+      <div className="p-6 max-w-3xl mx-auto">
         <Link href="/learn" className="inline-flex items-center gap-1 text-sm text-muted hover:text-foreground mb-6 transition-colors">
           <ChevronLeft size={16} />Back to Lessons
         </Link>
@@ -153,8 +149,7 @@ export default function LessonPage({ params }: { params: Promise<{ lessonId: str
             )}
           </div>
         </div>
-      </Container>
-      <Footer />
-    </main>
+      </div>
+    </QuranReaderLayout>
   );
 }
