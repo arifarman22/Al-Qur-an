@@ -1,24 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { apiSearch, type SearchResultDTO } from "@/utils/api";
-import { useAuthStore } from "@/store/useAuthStore";
 import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
 export default function SearchPage() {
-  const { user, loading: authLoading } = useAuthStore();
-  const router = useRouter();
-  const [query, setQuery] = useState("");
+      const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResultDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  useEffect(() => { if (!authLoading && !user) router.replace("/login"); }, [user, authLoading, router]);
-  if (authLoading || !user) return <div className="h-screen bg-background" />;
-
+    
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;

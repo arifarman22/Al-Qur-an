@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/useAuthStore";
 import { apiGetProfile, apiUpdateProfile, apiChangePassword, type ProfileDTO } from "@/utils/api";
 import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
 import { User, Mail, Calendar, Bookmark, BookOpen, Lock, Save, Loader2, AlertCircle, CheckCircle } from "lucide-react";
@@ -12,8 +10,7 @@ import { toast } from "sonner";
 
 export default function ProfilePage() {
   const { user, loading: authLoading, checkAuth } = useAuthStore();
-  const router = useRouter();
-  const [profile, setProfile] = useState<ProfileDTO | null>(null);
+    const [profile, setProfile] = useState<ProfileDTO | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Edit name
@@ -27,16 +24,13 @@ export default function ProfilePage() {
   const [savingPwd, setSavingPwd] = useState(false);
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!user) { router.replace("/login"); return; }
     apiGetProfile()
       .then((p) => { setProfile(p); setName(p.name); })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [user, authLoading, router]);
+  }, []);
 
-  if (authLoading || !user) return <div className="h-screen bg-background" />;
-
+  
   const handleSaveName = async () => {
     if (!name.trim() || name === profile?.name) return;
     setSavingName(true);

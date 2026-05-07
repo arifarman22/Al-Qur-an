@@ -11,14 +11,16 @@ import { motion } from "framer-motion";
 import { CheckCircle2, Lock, ChevronRight } from "lucide-react";
 
 export default function LearnPage() {
-  const { user, loading: authLoading } = useAuthStore();
+  const { user, loading: authLoading, checkAuth } = useAuthStore();
   const router = useRouter();
   const [progress, setProgress] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => { checkAuth(); }, [checkAuth]);
+
   useEffect(() => {
     if (authLoading) return;
-    if (!user) { router.replace("/login"); return; }
+    if (!user) { router.replace("/login?redirect=/learn"); return; }
     apiGetLearningProgress()
       .then((data) => {
         const map: Record<string, boolean> = {};

@@ -1,27 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { apiGetDailyAyah, apiGetReadingProgress, type DailyAyahDTO, type ReadingProgressDTO } from "@/utils/api";
-import { useAuthStore } from "@/store/useAuthStore";
+import { apiGetDailyAyah, type DailyAyahDTO } from "@/utils/api";
 import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
 export default function HomePage() {
-  const { user, loading: authLoading } = useAuthStore();
-  const router = useRouter();
   const [dailyAyah, setDailyAyah] = useState<DailyAyahDTO | null>(null);
-  const [lastRead, setLastRead] = useState<ReadingProgressDTO | null>(null);
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!user) { router.replace("/login"); return; }
     apiGetDailyAyah().then(setDailyAyah).catch(() => {});
-    apiGetReadingProgress().then(setLastRead).catch(() => {});
-  }, [user, authLoading, router]);
-
-  if (authLoading || !user) return <div className="h-screen bg-background" />;
+  }, []);
 
   return (
     <QuranReaderLayout>
@@ -31,26 +21,9 @@ export default function HomePage() {
           <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <span className="text-primary text-3xl font-bold" style={{ fontFamily: "var(--font-amiri)" }}>ق</span>
           </div>
-          <h1 className="text-2xl font-bold mb-1">Assalamu Alaikum, {user.name.split(" ")[0]}</h1>
+          <h1 className="text-2xl font-bold mb-1">Al-Quran</h1>
           <p className="text-muted text-sm">Read, listen, and study the Noble Quran</p>
         </motion.div>
-
-        {/* Continue Reading */}
-        {lastRead && (
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="card p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-primary font-medium mb-1">Continue Reading</p>
-                <p className="font-semibold">{lastRead.surahName}</p>
-                <p className="text-xs text-muted">Ayah {lastRead.ayahNumber}</p>
-              </div>
-              <Link href={`/surah/${lastRead.surahId}?ayah=${lastRead.ayahNumber}`}
-                className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors">
-                Resume
-              </Link>
-            </div>
-          </motion.div>
-        )}
 
         {/* Daily Ayah */}
         {dailyAyah && (
@@ -59,7 +32,7 @@ export default function HomePage() {
               <span className="text-xs font-medium text-accent">✦ Ayah of the Day</span>
               <span className="text-xs text-muted ml-auto">{dailyAyah.surah.name_simple}</span>
             </div>
-            <p className="text-right leading-[2] mb-3" dir="rtl"
+            <p className="text-center leading-[2] mb-3" dir="rtl"
               style={{ fontSize: "22px", fontFamily: "var(--font-kfgq)" }}>
               {dailyAyah.verse.text_uthmani}
             </p>
@@ -97,15 +70,13 @@ export default function HomePage() {
         </motion.div>
 
         {/* Start Reading CTA */}
-        {!lastRead && (
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-            className="text-center py-6">
-            <Link href="/surah/1"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors">
-              Start Reading the Quran
-            </Link>
-          </motion.div>
-        )}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+          className="text-center py-6">
+          <Link href="/surah/1"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors">
+            Start Reading the Quran
+          </Link>
+        </motion.div>
       </div>
     </QuranReaderLayout>
   );

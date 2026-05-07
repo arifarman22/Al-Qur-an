@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { type AyahDTO, apiCreateBookmark, apiDeleteBookmark } from "@/utils/api";
+import { type AyahDTO } from "@/utils/api";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { useAudioStore } from "@/store/useAudioStore";
+import { useBookmarkStore } from "@/store/useBookmarkStore";
 import { cn } from "@/utils/utils";
 import { toast } from "sonner";
 
@@ -11,19 +12,17 @@ interface Props {
   ayah: AyahDTO;
   surahId: number;
   surahName: string;
-  bookmarkId?: string;
-  onBookmarkChange?: () => void;
   onRead?: (verseNumber: number) => void;
 }
 
-export default function AyahItem({ ayah, surahId, surahName, bookmarkId, onBookmarkChange, onRead }: Props) {
+export default function AyahItem({ ayah, surahId, surahName, onRead }: Props) {
   const { arabicFont, arabicFontSize, translationFontSize, arabicScript } = useSettingsStore();
   const { currentAyahId, isPlaying, setCurrentAyah, setIsPlaying } = useAudioStore();
+  const { addBookmark, removeBookmark, isBookmarked } = useBookmarkStore();
   const [copied, setCopied] = useState(false);
-  const [bookmarking, setBookmarking] = useState(false);
 
   const isCurrent = currentAyahId === ayah.verse_key;
-  const isBookmarked = !!bookmarkId;
+  const bookmarked = isBookmarked(ayah.verse_key);
   const arabicText = arabicScript === "indopak" && ayah.text_indopak ? ayah.text_indopak : ayah.text_uthmani || "";
   const englishTranslation = ayah.translations?.find((t) => t.resource_id === 131)?.text || "";
   const bengaliTranslation = ayah.translations?.find((t) => t.resource_id === 161)?.text || "";
@@ -44,20 +43,14 @@ export default function AyahItem({ ayah, surahId, surahName, bookmarkId, onBookm
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const toggleBookmark = async () => {
-    if (bookmarking) return;
-    setBookmarking(true);
-    try {
-      if (isBookmarked && bookmarkId) {
-        await apiDeleteBookmark(bookmarkId);
-        toast.info("Bookmark removed");
-      } else {
-        await apiCreateBookmark(ayah.verse_key, surahId, surahName, ayah.verse_number);
-        toast.success("Bookmarked");
-      }
-      onBookmarkChange?.();
-    } catch (err: any) { toast.error(err.message); }
-    finally { setBookmarking(false); }
+  const toggleBookmark = () => {
+    if (bookmarked) {
+      removeBookmark(ayah.verse_key);
+      toast.info("Bookmark removed");
+    } else {
+      addBookmark({ verseKey: ayah.verse_key, surahId, surahName, ayahNumber: ayah.verse_number });
+      toast.success("Bookmarked");
+    }
   };
 
   const ref = useRef<HTMLDivElement>(null);
@@ -109,10 +102,9 @@ export default function AyahItem({ ayah, surahId, surahName, bookmarkId, onBookm
           {/* Bookmark */}
           <button
             onClick={toggleBookmark}
-            disabled={bookmarking}
-            className={cn("w-8 h-8 rounded-lg flex items-center justify-center transition-colors", isBookmarked ? "text-accent" : "text-muted hover:text-accent hover:bg-accent/10")}
+            className={cn("w-8 h-8 rounded-lg flex items-center justify-center transition-colors", bookmarked ? "text-accent" : "text-muted hover:text-accent hover:bg-accent/10")}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isBookmarked ? "currentColor" : "none"} stroke="currentColor" strokeWidth={isBookmarked ? 0 : 1.5} className="w-4 h-4">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={bookmarked ? "currentColor" : "none"} stroke="currentColor" strokeWidth={bookmarked ? 0 : 1.5} className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
             </svg>
           </button>

@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/useAuthStore";
 import { apiGetSurahs, apiGetMemorization, apiUpdateMemorization, type SurahDTO, type MemorizationDTO } from "@/utils/api";
 import QuranReaderLayout from "@/components/quran-reader/QuranReaderLayout";
 import Link from "next/link";
@@ -23,16 +21,12 @@ const RECOMMENDED_ORDER = [
 ];
 
 export default function MemorizePage() {
-  const { user, loading: authLoading } = useAuthStore();
-  const router = useRouter();
-  const [surahs, setSurahs] = useState<SurahDTO[]>([]);
+      const [surahs, setSurahs] = useState<SurahDTO[]>([]);
   const [memMap, setMemMap] = useState<Record<number, string>>({});
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"recommended" | "all">("recommended");
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!user) { router.replace("/login"); return; }
     Promise.all([
       apiGetSurahs().then(setSurahs),
       apiGetMemorization().then((data) => {
@@ -43,10 +37,9 @@ export default function MemorizePage() {
     ])
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [user, authLoading, router]);
+  }, []);
 
-  if (authLoading || !user) return <div className="h-screen bg-background" />;
-
+  
   const handleStatusChange = async (surah: SurahDTO, status: string) => {
     try {
       await apiUpdateMemorization(surah.id, surah.name_simple, status);
