@@ -4,21 +4,18 @@ import { useEffect, useState, use } from "react";
 import { apiGetSurahs, apiGetSurah, apiGetAyahs, type SurahDTO, type AyahDTO } from "@/utils/api";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { usePlaybackStore } from "@/store/usePlaybackStore";
-import { useSurahAudio } from "@/hooks/useSurahAudio";
 import { useBookmarkStore } from "@/store/useBookmarkStore";
 import AyahCard from "@/components/quran/AyahCard";
 import { cn } from "@/utils/utils";
 import { toast } from "sonner";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import { Home, BookOpen, Search, Bookmark, Moon, Sun, Menu, X, ChevronLeft, ChevronRight, Settings, Type } from "lucide-react";
 
 export default function SurahPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const settings = useSettingsStore();
   const playback = usePlaybackStore();
-  useSurahAudio(); // Initialize audio engine
   const { isBookmarked } = useBookmarkStore();
 
   const [surahs, setSurahs] = useState<SurahDTO[]>([]);
@@ -54,21 +51,21 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
   const nextSurah = +id < 114 ? +id + 1 : null;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col">
       {/* ═══ NAVBAR ═══ */}
       <Navbar />
 
       {/* ═══ MAIN 3-PANEL LAYOUT ═══ */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden min-h-0">
 
         {/* ═══ LEFT: SURAH SIDEBAR ═══ */}
         {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
         <aside className={cn(
-          "w-72 bg-surface border-r border-border flex flex-col shrink-0 z-50 transition-transform overflow-hidden",
+          "w-72 bg-surface border-r border-border flex flex-col shrink-0 z-50 transition-transform",
           "max-lg:fixed max-lg:left-0 max-lg:top-0 max-lg:h-full",
           sidebarOpen ? "max-lg:translate-x-0" : "max-lg:-translate-x-full"
         )}>
-          <div className="p-4 border-b border-border">
+          <div className="p-4 border-b border-border shrink-0">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-bold">Surahs</h2>
               <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted hover:text-foreground"><X size={16} /></button>
@@ -267,7 +264,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
       </div>
 
       {/* ═══ FOOTER ═══ */}
-      <Footer />
+      {/* Footer removed from fixed layout — accessible via scroll in center panel */}
     </div>
   );
 }
