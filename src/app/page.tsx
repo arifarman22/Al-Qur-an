@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiGetSurahs, apiGetDailyAyah, type SurahDTO, type DailyAyahDTO } from "@/utils/api";
+import { apiGetSurahs, type SurahDTO } from "@/utils/api";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { BookOpen, Search, ArrowRight, Sparkles, Play, ChevronDown } from "lucide-react";
+import { BookOpen, Search, ArrowRight, ChevronDown } from "lucide-react";
 
 const INITIAL_COUNT = 12;
 
@@ -16,11 +17,9 @@ export default function HomePage() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "meccan" | "medinan">("all");
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
-  const [dailyAyah, setDailyAyah] = useState<DailyAyahDTO | null>(null);
 
   useEffect(() => {
     apiGetSurahs().then(setSurahs).catch(() => {}).finally(() => setLoading(false));
-    apiGetDailyAyah().then(setDailyAyah).catch(() => {});
   }, []);
 
   const filtered = surahs.filter((s) => {
@@ -37,58 +36,40 @@ export default function HomePage() {
       <Navbar />
 
       {/* ═══════ HERO SECTION ═══════ */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+      <section className="relative overflow-hidden h-[85vh] min-h-[600px] flex items-center justify-center">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img src="/mainbanner.png" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/60" />
+        </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 lg:py-36">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full text-primary text-xs font-medium mb-6">
-              <Sparkles size={14} />
-              Read, Listen & Study the Noble Quran
-            </div>
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          {/* H1 with special font */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="text-5xl sm:text-6xl lg:text-7xl mb-8 leading-tight"
+            style={{ fontFamily: "var(--font-amiri)" }}
+          >
+            القرآن الكريم
+          </motion.h1>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              The Noble <span className="text-primary">Quran</span>
-            </h1>
-
-            <p className="text-lg text-muted max-w-xl mx-auto mb-8">
-              Explore all 114 surahs with Arabic text, English & Bengali translations, per-ayah audio recitation, and a structured learning path.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link href="/surah/1" className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-white rounded-xl text-sm font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] transition-all">
-                <Play size={16} fill="currentColor" />
-                Start Reading
-              </Link>
-              <Link href="/search" className="flex items-center gap-2 px-6 py-3 bg-surface border border-border rounded-xl text-sm font-medium hover:border-primary/40 transition-all">
-                <Search size={16} />
-                Search Quran
-              </Link>
+          {/* Search Bar */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="max-w-xl mx-auto mb-12">
+            <div className="relative">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" />
+              <input
+                type="text"
+                placeholder="Search the Quran..."
+                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder:text-white/50 text-sm outline-none focus:border-white/40 focus:bg-white/15 transition-all"
+                onKeyDown={(e) => { if (e.key === "Enter" && (e.target as HTMLInputElement).value) window.location.href = `/search?q=${(e.target as HTMLInputElement).value}`; }}
+              />
             </div>
           </motion.div>
 
-          {/* Daily Ayah Card */}
-          {dailyAyah && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-              className="mt-16 max-w-2xl mx-auto card p-6 sm:p-8 border-primary/20 shadow-xl shadow-primary/5">
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles size={14} className="text-accent" />
-                <span className="text-xs font-semibold text-accent uppercase tracking-wider">Ayah of the Day</span>
-                <span className="text-xs text-muted ml-auto">{dailyAyah.surah.name_simple}</span>
-              </div>
-              <p className="text-center leading-[2.2] mb-4" dir="rtl" style={{ fontSize: "26px", fontFamily: "var(--font-amiri)" }}>
-                {dailyAyah.verse.text_uthmani}
-              </p>
-              <p className="text-sm text-muted leading-relaxed text-center" dangerouslySetInnerHTML={{ __html: dailyAyah.verse.translations?.[0]?.text || "" }} />
-              <div className="text-center mt-4">
-                <Link href={`/surah/${dailyAyah.surah.id}`} className="inline-flex items-center gap-1 text-xs text-primary font-medium hover:underline">
-                  Read full surah <ArrowRight size={12} />
-                </Link>
-              </div>
-            </motion.div>
-          )}
+          {/* Auto-sliding Ayahs (3 ayahs) */}
+          <AyahSlider />
         </div>
       </section>
 
@@ -202,5 +183,62 @@ function GraduationCap({ size }: { size: number }) {
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" />
     </svg>
+  );
+}
+
+// ═══ Auto-sliding Ayah component ═══
+const SLIDER_AYAHS = [
+  {
+    arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
+    translation: "Indeed, with hardship comes ease.",
+    reference: "Ash-Sharh 94:6",
+  },
+  {
+    arabic: "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ",
+    translation: "And your Lord is going to give you, and you will be satisfied.",
+    reference: "Ad-Duha 93:5",
+  },
+  {
+    arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ",
+    translation: "So remember Me; I will remember you.",
+    reference: "Al-Baqarah 2:152",
+  },
+];
+
+function AyahSlider() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((c) => (c + 1) % SLIDER_AYAHS.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const ayah = SLIDER_AYAHS[current];
+
+  return (
+    <motion.div
+      key={current}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-lg mx-auto"
+    >
+      <p className="text-2xl sm:text-3xl leading-relaxed mb-3" dir="rtl" style={{ fontFamily: "var(--font-amiri)" }}>
+        {ayah.arabic}
+      </p>
+      <p className="text-white/70 text-sm mb-2">{ayah.translation}</p>
+      <p className="text-white/40 text-xs">— {ayah.reference}</p>
+
+      {/* Dots */}
+      <div className="flex items-center justify-center gap-2 mt-5">
+        {SLIDER_AYAHS.map((_, i) => (
+          <button key={i} onClick={() => setCurrent(i)}
+            className={cn("w-2 h-2 rounded-full transition-all", i === current ? "bg-white w-6" : "bg-white/30")} />
+        ))}
+      </div>
+    </motion.div>
   );
 }

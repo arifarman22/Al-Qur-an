@@ -8,11 +8,11 @@ import { cn } from "@/utils/utils";
 import { Moon, Sun, Settings, BookOpen, Search, Bookmark, GraduationCap, Heart, Menu, X } from "lucide-react";
 
 const navItems = [
-  { name: "Surahs", href: "/", icon: BookOpen },
+  { name: "Home", href: "/", icon: BookOpen },
+  { name: "Read Quran", href: "/surah/1", icon: BookOpen },
   { name: "Search", href: "/search", icon: Search },
   { name: "Bookmarks", href: "/bookmarks", icon: Bookmark },
   { name: "Learn", href: "/learn", icon: GraduationCap },
-  { name: "Duas", href: "/duas", icon: Heart },
 ];
 
 export default function Navbar() {
