@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function SplashScreen() {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1B7A6E] dark:bg-[#0C1220] overflow-hidden">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0F1419] overflow-hidden">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-[0.05]">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">

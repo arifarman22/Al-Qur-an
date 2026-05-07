@@ -5,8 +5,6 @@ import { useSettingsStore } from "@/store/useSettingsStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import GlobalAudioPlayer from "@/components/audio/AudioPlayer";
 import SplashScreen from "@/components/layout/SplashScreen";
-import PageTransition from "@/components/ui/PageTransition";
-import ScrollToTop from "@/components/ui/ScrollToTop";
 
 export default function QuranProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useSettingsStore();
@@ -19,7 +17,10 @@ export default function QuranProvider({ children }: { children: React.ReactNode 
   }, [checkAuth]);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
+    const root = document.documentElement;
+    // Dark is default in CSS, so we add 'light' class for light mode
+    root.classList.toggle("light", theme === "light");
+    root.classList.toggle("dark", theme === "dark");
   }, [theme]);
 
   useEffect(() => {
@@ -31,9 +32,8 @@ export default function QuranProvider({ children }: { children: React.ReactNode 
 
   return (
     <>
-      <PageTransition>{children}</PageTransition>
+      {children}
       <GlobalAudioPlayer />
-      <ScrollToTop />
     </>
   );
 }
