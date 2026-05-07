@@ -3,20 +3,23 @@
 import { useEffect, useState, use } from "react";
 import { apiGetSurahs, apiGetSurah, apiGetAyahs, type SurahDTO, type AyahDTO } from "@/utils/api";
 import { useSettingsStore } from "@/store/useSettingsStore";
-import { useAudioStore } from "@/store/useAudioStore";
+import { usePlaybackStore } from "@/store/usePlaybackStore";
+import { useSurahAudio } from "@/hooks/useSurahAudio";
 import { useBookmarkStore } from "@/store/useBookmarkStore";
+import AyahCard from "@/components/quran/AyahCard";
 import { cn } from "@/utils/utils";
 import { toast } from "sonner";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { Home, BookOpen, Search, Bookmark, Moon, Sun, Play, Pause, Copy, Menu, X, ChevronLeft, ChevronRight, Settings, Type, Volume2 } from "lucide-react";
+import { Home, BookOpen, Search, Bookmark, Moon, Sun, Menu, X, ChevronLeft, ChevronRight, Settings, Type } from "lucide-react";
 
 export default function SurahPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const settings = useSettingsStore();
-  const { currentAyahId, isPlaying, setCurrentAyah, setIsPlaying } = useAudioStore();
-  const { addBookmark, removeBookmark, isBookmarked } = useBookmarkStore();
+  const playback = usePlaybackStore();
+  useSurahAudio(); // Initialize audio engine
+  const { isBookmarked } = useBookmarkStore();
 
   const [surahs, setSurahs] = useState<SurahDTO[]>([]);
   const [surah, setSurah] = useState<SurahDTO | null>(null);
@@ -34,7 +37,11 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
   useEffect(() => {
     setLoading(true);
     Promise.all([apiGetSurah(+id), apiGetAyahs(+id, settings.arabicScript)])
-      .then(([s, a]) => { setSurah(s); setAyahs(a); })
+      .then(([s, a]) => {
+        setSurah(s); setAyahs(a);
+        // Load into playback engine
+        if (s) playback.loadSurah(s.id, s.name_simple, a);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [id, settings.arabicScript]);
@@ -129,36 +136,9 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                   </div>
                 )}
 
-                {ayahs.map((ayah) => {
-                  const isCurrent = currentAyahId === ayah.verse_key;
-                  const bookmarked = isBookmarked(ayah.verse_key);
-                  const arabicText = settings.arabicScript === "indopak" && ayah.text_indopak ? ayah.text_indopak : ayah.text_uthmani || "";
-
-                  return (
-                    <div key={ayah.id} className={cn("px-4 py-6 md:px-8 border-b border-border/60 group transition-all", isCurrent && "bg-primary/5 border-l-[3px] border-l-primary")}>
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-xs font-bold border border-primary/15">{ayah.verse_number}</span>
-                          {isCurrent && <Volume2 size={14} className="text-primary animate-pulse" />}
-                        </div>
-                        <div className="flex gap-1 opacity-30 group-hover:opacity-100 transition-opacity">
-                          <button onClick={() => { if (isCurrent && isPlaying) setIsPlaying(false); else if (ayah.audio_url) setCurrentAyah(ayah.verse_key, surah.id, ayah.audio_url); }}
-                            disabled={!ayah.audio_url}
-                            className={cn("w-8 h-8 rounded-lg flex items-center justify-center transition-all", isCurrent && isPlaying ? "bg-primary text-white shadow-sm shadow-primary/30" : "text-muted hover:text-primary hover:bg-primary/10")}>
-                            {isCurrent && isPlaying ? <Pause size={14} /> : <Play size={14} />}
-                          </button>
-                          <button onClick={() => { if (bookmarked) removeBookmark(ayah.verse_key); else addBookmark({ verseKey: ayah.verse_key, surahId: surah.id, surahName: surah.name_simple, ayahNumber: ayah.verse_number }); toast.success(bookmarked ? "Removed" : "Bookmarked"); }}
-                            className={cn("w-8 h-8 rounded-lg flex items-center justify-center transition-all", bookmarked ? "text-accent bg-accent/10" : "text-muted hover:text-accent hover:bg-accent/10")}>
-                            <Bookmark size={14} fill={bookmarked ? "currentColor" : "none"} />
-                          </button>
-                          <button onClick={() => { navigator.clipboard.writeText(arabicText); toast.success("Copied"); }}
-                            className="w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-alt transition-all"><Copy size={14} /></button>
-                        </div>
-                      </div>
-                      <p className="text-right leading-[2.4] text-foreground" dir="rtl" style={{ fontSize: `${settings.arabicFontSize}px`, fontFamily, wordSpacing: "3px" }}>{arabicText}</p>
-                    </div>
-                  );
-                })}
+                {ayahs.map((ayah, index) => (
+                    <AyahCard key={ayah.id} ayah={ayah} index={index} surahId={surah.id} surahName={surah.name_simple} />
+                ))}
               </>
             )}
           </div>
@@ -188,30 +168,8 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
 
               <div className="flex-1 overflow-y-auto">
                 {rightTab === "translation" ? (
-                  <div className="divide-y divide-border/50">
-                    {ayahs.map((ayah) => {
-                      const english = ayah.translations?.find((t) => t.resource_id === 131)?.text || "";
-                      const bengali = ayah.translations?.find((t) => t.resource_id === 161)?.text || "";
-                      return (
-                        <div key={ayah.id} className="px-5 py-4 hover:bg-surface-alt/50 transition-colors">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="w-5 h-5 rounded bg-primary/10 text-primary flex items-center justify-center text-[9px] font-bold">{ayah.verse_number}</span>
-                            <span className="text-[10px] text-muted">{ayah.verse_key}</span>
-                          </div>
-                          {english && <p className="text-foreground/80 leading-relaxed" style={{ fontSize: `${settings.translationFontSize}px` }} dangerouslySetInnerHTML={{ __html: english }} />}
-                          {bengali && (
-                            <div className="mt-3 pt-3 border-t border-border/40">
-                              <p className="text-[10px] text-primary font-medium mb-1">বাংলা অনুবাদ</p>
-                              <p className="text-foreground/70 leading-relaxed" style={{ fontSize: `${settings.translationFontSize}px`, fontFamily: "var(--font-bengali)" }} dangerouslySetInnerHTML={{ __html: bengali }} />
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
                   <div className="p-5 space-y-6">
-                    {/* Reading Settings Header */}
+                    {/* Settings Header */}
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                         <Settings size={15} className="text-primary" />
@@ -291,6 +249,14 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                       </div>
                       <p className="text-sm font-semibold text-primary">Help spread the knowledge of Islam</p>
                       <p className="text-[11px] text-muted mt-1">Share this app with your family and friends</p>
+                    </div>
+                  </div>
+                ) : (
+                  /* ═══ READING TAB — placeholder for future content ═══ */
+                  <div className="p-5 space-y-4">
+                    <div className="text-center py-12">
+                      <BookOpen size={32} className="mx-auto text-muted/30 mb-3" />
+                      <p className="text-sm text-muted">Reading features coming soon</p>
                     </div>
                   </div>
                 )}

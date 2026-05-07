@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSettingsStore } from "@/store/useSettingsStore";
-import GlobalAudioPlayer from "@/components/audio/AudioPlayer";
+import GlobalSurahPlayer from "@/components/audio/GlobalSurahPlayer";
 import SplashScreen from "@/components/layout/SplashScreen";
 
 export default function QuranProvider({ children }: { children: React.ReactNode }) {
@@ -25,7 +25,7 @@ export default function QuranProvider({ children }: { children: React.ReactNode 
   return (
     <>
       {children}
-      <GlobalAudioPlayer />
+      <GlobalSurahPlayer />
     </>
   );
 }
