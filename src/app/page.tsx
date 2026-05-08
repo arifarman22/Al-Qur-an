@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { apiGetSurahs, type SurahDTO } from "@/utils/api";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -13,6 +14,7 @@ import { BookOpen, Search, ChevronDown, Sparkles } from "lucide-react";
 const INITIAL_COUNT = 12;
 
 export default function HomePage() {
+  const router = useRouter();
   const [surahs, setSurahs] = useState<SurahDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
@@ -55,8 +57,8 @@ export default function HomePage() {
               <Sparkles size={12} />
               The Final Revelation
             </div>
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl mb-8 leading-tight font-bold tracking-tight">
-              The Noble <span className="text-accent">Quran</span>
+            <h1 className="text-5xl sm:text-7xl lg:text-8xl mb-8 leading-tight font-light tracking-tight">
+              The Noble <span className="text-accent font-normal">Quran</span>
             </h1>
 
             {/* Search Bar */}
@@ -67,7 +69,12 @@ export default function HomePage() {
                   type="text"
                   placeholder="Search Surah, Verse, or Topic..."
                   className="w-full pl-14 pr-6 py-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white placeholder:text-white/40 text-lg outline-none focus:border-accent/50 focus:bg-white/10 transition-all shadow-2xl"
-                  onKeyDown={(e) => { if (e.key === "Enter" && (e.target as HTMLInputElement).value) window.location.href = `/search?q=${(e.target as HTMLInputElement).value}`; }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      const val = (e.target as HTMLInputElement).value.trim();
+                      if (val) router.push(`/search?q=${encodeURIComponent(val)}`);
+                    }
+                  }}
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:block">
                   <kbd className="px-2 py-1 bg-white/10 border border-white/10 rounded text-[10px] text-white/40 font-sans">Enter ↵</kbd>
