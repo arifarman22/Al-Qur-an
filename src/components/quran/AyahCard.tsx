@@ -134,16 +134,16 @@ const AyahCard = memo(function AyahCard({ ayah, index, surahId, surahName }: Pro
       {/* ═══ RIGHT: AYAH CONTENT ═══ */}
       <div className="flex-1 min-w-0">
         {/* Arabic text with word-by-word highlighting */}
-        <div className="text-right mb-4" dir="rtl">
-          <p className="leading-[2.6] inline" style={{ fontSize: `${settings.arabicFontSize}px`, fontFamily, wordSpacing: "6px" }}>
+        <div className="text-right mb-6" dir="rtl">
+          <p className="leading-[3] inline" style={{ fontSize: `${settings.arabicFontSize}px`, fontFamily, wordSpacing: "4px" }}>
             {words.map((word, wi) => (
               <span
                 key={wi}
                 className={cn(
-                  "inline-block transition-all duration-200 rounded px-0.5",
-                  isCurrent && wi === currentWordIndex && "text-accent scale-105 drop-shadow-[0_0_8px_rgba(197,150,58,0.4)]",
-                  isCurrent && wi < currentWordIndex && "text-primary/70",
-                  isCurrent && wi > currentWordIndex && "text-foreground"
+                  "inline-block transition-all duration-300 rounded-lg px-1",
+                  isActive && wi === currentWordIndex && "text-accent bg-accent/5 ring-1 ring-accent/20 scale-110 shadow-[0_0_15px_rgba(197,150,58,0.2)]",
+                  isActive && wi < currentWordIndex && "text-primary/60",
+                  !isActive && "text-foreground/90"
                 )}
               >
                 {word}{" "}
@@ -154,13 +154,15 @@ const AyahCard = memo(function AyahCard({ ayah, index, surahId, surahName }: Pro
 
         {/* English Translation */}
         {english && (
-          <p className="text-muted leading-relaxed" style={{ fontSize: `${settings.translationFontSize}px` }} dangerouslySetInnerHTML={{ __html: english }} />
+          <div className="relative pl-4 border-l-2 border-primary/10">
+            <p className="text-foreground/80 leading-relaxed font-medium" style={{ fontSize: `${settings.translationFontSize}px` }} dangerouslySetInnerHTML={{ __html: english }} />
+          </div>
         )}
 
         {/* Bengali Translation */}
         {bengali && (
-          <div className="mt-3 pt-3 border-t border-border/40">
-            <p className="text-[10px] text-primary font-medium mb-1">বাংলা</p>
+          <div className="mt-4 pt-4 border-t border-border/40 pl-4 border-l-2 border-accent/10">
+            <p className="text-[10px] text-accent font-bold tracking-widest uppercase mb-1.5">Translation: Bengali</p>
             <p className="text-muted leading-relaxed" style={{ fontSize: `${settings.translationFontSize}px`, fontFamily: "var(--font-bengali)" }} dangerouslySetInnerHTML={{ __html: bengali }} />
           </div>
         )}

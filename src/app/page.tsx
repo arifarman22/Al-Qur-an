@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { apiGetSurahs, type SurahDTO } from "@/utils/api";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SurahCard from "@/components/quran/SurahCard";
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { BookOpen, Search, ArrowRight, ChevronDown } from "lucide-react";
+import { BookOpen, Search, ChevronDown, Sparkles } from "lucide-react";
 
 const INITIAL_COUNT = 12;
 
@@ -36,40 +37,47 @@ export default function HomePage() {
       <Navbar />
 
       {/* ═══════ HERO SECTION ═══════ */}
-      <section className="relative overflow-hidden">
-        {/* Background Image */}
-        <div className="relative w-full">
-          <img src="/mainbanner.png" alt="" className="w-full h-auto" />
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-          {/* H1 with special font */}
-          <motion.h1
+      <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img src="/islamic_hero_bg.png" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary-dark/80 via-primary-dark/60 to-background" />
+          <div className="absolute inset-0 islamic-pattern opacity-5" />
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white pt-20 pb-12">
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="text-5xl sm:text-6xl lg:text-7xl mb-8 leading-tight font-bold"
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            The Noble Quran
-          </motion.h1>
-
-          {/* Search Bar */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="max-w-xl mx-auto mb-12">
-            <div className="relative">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" />
-              <input
-                type="text"
-                placeholder="Search the Quran..."
-                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder:text-white/50 text-sm outline-none focus:border-white/40 focus:bg-white/15 transition-all"
-                onKeyDown={(e) => { if (e.key === "Enter" && (e.target as HTMLInputElement).value) window.location.href = `/search?q=${(e.target as HTMLInputElement).value}`; }}
-              />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/20 border border-accent/30 text-accent-light text-xs font-bold tracking-widest uppercase mb-6 backdrop-blur-md">
+              <Sparkles size={12} />
+              The Final Revelation
             </div>
+            <h1 className="text-5xl sm:text-7xl lg:text-8xl mb-8 leading-tight font-bold tracking-tight">
+              The Noble <span className="text-accent">Quran</span>
+            </h1>
+
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto mb-16">
+              <div className="relative group">
+                <Search size={20} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-accent transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Search Surah, Verse, or Topic..."
+                  className="w-full pl-14 pr-6 py-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white placeholder:text-white/40 text-lg outline-none focus:border-accent/50 focus:bg-white/10 transition-all shadow-2xl"
+                  onKeyDown={(e) => { if (e.key === "Enter" && (e.target as HTMLInputElement).value) window.location.href = `/search?q=${(e.target as HTMLInputElement).value}`; }}
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:block">
+                  <kbd className="px-2 py-1 bg-white/10 border border-white/10 rounded text-[10px] text-white/40 font-sans">Enter ↵</kbd>
+                </div>
+              </div>
+            </div>
+
+            {/* Auto-sliding Ayahs */}
+            <AyahSlider />
           </motion.div>
-
-          {/* Auto-sliding Ayahs (3 ayahs) */}
-          <AyahSlider />
-            </div>
-          </div>
         </div>
       </section>
 
@@ -100,27 +108,9 @@ export default function HomePage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {visible.map((surah, i) => (
-                <motion.div key={surah.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
-                  <Link href={`/surah/${surah.id}`}>
-                    <div className="card p-4 flex items-center justify-between gap-4 hover:border-primary/40 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 transition-all group">
-                      <div className="flex items-center gap-3.5">
-                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary flex items-center justify-center text-sm font-bold shrink-0 border border-primary/10">
-                          {surah.id}
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-semibold group-hover:text-primary transition-colors">{surah.name_simple}</h3>
-                          <p className="text-xs text-muted">{surah.translated_name.name}</p>
-                        </div>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-lg font-bold text-primary" style={{ fontFamily: "var(--font-amiri)" }}>{surah.name_arabic}</p>
-                        <p className="text-[11px] text-muted">{surah.verses_count} ayahs</p>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
+                <SurahCard key={surah.id} surah={surah} index={i} />
               ))}
             </div>
 

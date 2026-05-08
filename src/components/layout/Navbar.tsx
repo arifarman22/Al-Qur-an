@@ -26,25 +26,26 @@ export default function Navbar() {
       <header className="sticky top-0 z-40 bg-surface/80 backdrop-blur-xl border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-9 h-9 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-              <span className="text-white text-base font-bold" style={{ fontFamily: "var(--font-amiri)" }}>ق</span>
+          <Link href="/" className="flex items-center gap-3 shrink-0">
+            <div className="relative w-10 h-10 flex items-center justify-center">
+              <div className="absolute inset-0 bg-primary rotate-45 rounded-lg shadow-lg shadow-primary/20" />
+              <span className="relative text-white text-xl font-bold z-10" style={{ fontFamily: "var(--font-amiri)" }}>ق</span>
             </div>
             <div className="hidden sm:block">
-              <span className="font-bold text-sm">Al-Quran</span>
-              <p className="text-[10px] text-muted -mt-0.5">The Noble Quran</p>
+              <span className="font-bold text-lg tracking-tight text-primary">Al-Quran</span>
+              <p className="text-[10px] text-accent font-bold uppercase tracking-widest -mt-1">Noble Wisdom</p>
             </div>
           </Link>
 
           {/* Center Nav */}
-          <nav className="hidden lg:flex items-center gap-1 bg-surface-alt rounded-full px-2 py-1.5 border border-border">
+          <nav className="hidden lg:flex items-center gap-1 bg-surface-alt/50 rounded-full px-2 py-1.5 border border-border">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href}
                 className={cn(
-                  "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm transition-all",
+                  "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all",
                   pathname === item.href
-                    ? "bg-primary text-white shadow-sm shadow-primary/25"
-                    : "text-muted hover:text-foreground hover:bg-surface"
+                    ? "bg-primary text-white shadow-md shadow-primary/20"
+                    : "text-muted hover:text-primary hover:bg-white"
                 )}>
                 <item.icon size={15} />
                 {item.name}
@@ -60,9 +61,9 @@ export default function Navbar() {
             <button onClick={() => setSettingsOpen(true)} className="w-9 h-9 rounded-xl bg-surface-alt border border-border flex items-center justify-center text-muted hover:text-foreground transition-colors" title="Settings">
               <Settings size={16} />
             </button>
-            <Link href="/surah/1" className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-primary-dark text-white rounded-xl text-sm font-medium shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all">
-              <BookOpen size={15} />
-              Start Reading
+            <Link href="/surah/1" className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-xl text-sm font-bold shadow-lg shadow-accent/20 hover:bg-accent-light hover:shadow-accent/40 transition-all">
+              <BookOpen size={16} />
+              Read Quran
             </Link>
             <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden w-9 h-9 rounded-xl bg-surface-alt border border-border flex items-center justify-center text-muted">
               {mobileOpen ? <X size={16} /> : <Menu size={16} />}

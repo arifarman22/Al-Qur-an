@@ -55,10 +55,11 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
   return (
     <div className="h-screen bg-background flex flex-col">
       {/* ═══ NAVBAR (simplified) ═══ */}
-      <header className="h-14 bg-surface/80 backdrop-blur-xl border-b border-border flex items-center px-4 sm:px-6 shrink-0">
+      <header className="h-16 bg-surface/80 backdrop-blur-xl border-b border-border flex items-center px-4 sm:px-6 shrink-0 relative z-50">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-            <span className="text-white text-base font-bold" style={{ fontFamily: "var(--font-amiri)" }}>ق</span>
+          <div className="relative w-9 h-9 flex items-center justify-center">
+            <div className="absolute inset-0 bg-primary rotate-45 rounded-lg shadow-lg shadow-primary/20" />
+            <span className="relative text-white text-base font-bold z-10" style={{ fontFamily: "var(--font-amiri)" }}>ق</span>
           </div>
           <div className="hidden sm:block">
             <span className="font-bold text-sm">Al-Quran</span>
@@ -170,10 +171,11 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
             ) : surah && (
               <>
                 {/* Surah Header */}
-                <div className="text-center py-8 border-b border-border bg-gradient-to-b from-primary/3 to-transparent">
-                  <p className="text-3xl text-primary font-bold mb-1" style={{ fontFamily }}>{surah.name_arabic}</p>
-                  <h2 className="text-base font-semibold">{surah.name_simple}</h2>
-                  <p className="text-xs text-muted mt-1 capitalize">{surah.revelation_place} · {surah.verses_count} Ayahs · Revelation #{surah.revelation_order}</p>
+                <div className="relative text-center py-12 border-b border-border bg-surface-alt/30 overflow-hidden">
+                  <div className="absolute inset-0 islamic-pattern opacity-[0.03] pointer-events-none" />
+                  <p className="text-5xl text-primary font-bold mb-3 drop-shadow-sm" style={{ fontFamily }}>{surah.name_arabic}</p>
+                  <h2 className="text-2xl font-bold tracking-tight text-foreground/90">{surah.name_simple}</h2>
+                  <p className="text-xs text-accent font-bold mt-2 uppercase tracking-widest">{surah.revelation_place} · {surah.verses_count} Ayahs · Revelation #{surah.revelation_order}</p>
                 </div>
 
                 {surah.id !== 1 && surah.id !== 9 && (
@@ -324,12 +326,12 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                   <div className="p-5 space-y-6">
                     {/* Settings Header */}
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Settings size={15} className="text-primary" />
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                        <Settings size={15} className="text-emerald-700" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-bold">Reading Settings</h3>
-                        <p className="text-[10px] text-muted">Customize your reading experience</p>
+                        <h3 className="text-sm font-bold text-emerald-900">Reading Settings</h3>
+                        <p className="text-[10px] text-emerald-500">Customize your reading experience</p>
                       </div>
                     </div>
 
@@ -337,7 +339,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                     <div className="card p-4">
                       <div className="flex justify-between items-center mb-3">
                         <span className="text-xs font-medium">Arabic Font Size</span>
-                        <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">{settings.arabicFontSize}</span>
+                        <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">{settings.arabicFontSize}px</span>
                       </div>
                       <input type="range" min="20" max="56" value={settings.arabicFontSize} onChange={(e) => settings.setArabicFontSize(+e.target.value)} className="w-full" />
                       <div className="flex justify-between text-[10px] text-muted mt-1"><span>Small</span><span>Large</span></div>
@@ -347,7 +349,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                     <div className="card p-4">
                       <div className="flex justify-between items-center mb-3">
                         <span className="text-xs font-medium">Translation Font Size</span>
-                        <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">{settings.translationFontSize}</span>
+                        <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">{settings.translationFontSize}px</span>
                       </div>
                       <input type="range" min="12" max="24" value={settings.translationFontSize} onChange={(e) => settings.setTranslationFontSize(+e.target.value)} className="w-full" />
                       <div className="flex justify-between text-[10px] text-muted mt-1"><span>Small</span><span>Large</span></div>

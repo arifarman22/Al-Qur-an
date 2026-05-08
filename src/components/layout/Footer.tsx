@@ -3,16 +3,18 @@ import { Heart } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-surface">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+    <footer className="relative border-t border-border bg-surface overflow-hidden">
+      <div className="absolute inset-0 islamic-pattern opacity-[0.03] pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
-          <div>
-            <Link href="/" className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-dark rounded-lg flex items-center justify-center">
-                <span className="text-white text-sm font-bold" style={{ fontFamily: "var(--font-amiri)" }}>ق</span>
+          <div className="space-y-4">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="relative w-9 h-9 flex items-center justify-center">
+                <div className="absolute inset-0 bg-primary rotate-45 rounded-lg" />
+                <span className="relative text-white text-lg font-bold z-10" style={{ fontFamily: "var(--font-amiri)" }}>ق</span>
               </div>
-              <span className="font-bold">Al-Quran</span>
+              <span className="font-bold text-xl text-primary">Al-Quran</span>
             </Link>
             <p className="text-xs text-muted leading-relaxed">Read, listen, and study the Noble Quran with Arabic text, translations, and audio recitation.</p>
           </div>

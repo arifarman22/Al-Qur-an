@@ -1,10 +1,11 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #006A4E;
-  --color-primary-light: #d1f5e8;
-  --color-primary-dark: #004D38;
+  --color-primary: #004D38;
+  --color-primary-light: #006A4E;
+  --color-primary-dark: #003628;
   --color-accent: #C5963A;
+  --color-accent-light: #D4AF37;
   --color-surface: var(--surface);
   --color-surface-alt: var(--surface-alt);
   --color-border: var(--border-color);
@@ -17,22 +18,22 @@
 }
 
 :root {
-  --bg: #ffffff;
-  --fg: #111827;
-  --surface: #ffffff;
-  --surface-alt: #f9fafb;
-  --border-color: #e5e7eb;
-  --muted-color: #6b7280;
+  --bg: #FDFCF8; /* Soft cream background */
+  --fg: #1A2F29; /* Dark emerald foreground */
+  --surface: #FFFFFF;
+  --surface-alt: #F3F1E9;
+  --border-color: #E5E0D5;
+  --muted-color: #7A8B86;
   color-scheme: light;
 }
 
 .dark {
-  --bg: #000000;
-  --fg: #f1f5f9;
-  --surface: #111111;
-  --surface-alt: #000000;
-  --border-color: #222222;
-  --muted-color: #94a3b8;
+  --bg: #0A0F0D;
+  --fg: #E6EDE9;
+  --surface: #121815;
+  --surface-alt: #1A221E;
+  --border-color: #242E29;
+  --muted-color: #6B7A74;
   color-scheme: dark;
 }
 
@@ -59,30 +60,53 @@
   input:focus, textarea:focus, select:focus {
     border-color: var(--color-primary);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 106, 78, 0.12);
+    box-shadow: 0 0 0 3px rgba(0, 77, 56, 0.12);
   }
-  ::selection { background: rgba(0, 106, 78, 0.15); }
+  ::selection { background: rgba(197, 150, 58, 0.2); }
 }
 
 @layer utilities {
   .card {
     background-color: var(--surface);
     border: 1px solid var(--border-color);
-    border-radius: 1rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    border-radius: 1.25rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/islamic_pattern.png');
+    background-size: 300px;
+    opacity: 0.02;
+    pointer-events: none;
+  }
+  .dark .card::before {
+    opacity: 0.05;
   }
   .card:hover {
-    border-color: rgba(0, 106, 78, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 106, 78, 0.06);
+    border-color: var(--color-accent);
+    box-shadow: 0 10px 30px -10px rgba(0, 77, 56, 0.15);
+    transform: translateY(-2px);
   }
-  .line-clamp-6 { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+  .islamic-pattern {
+    background-image: url('/islamic_pattern.png');
+    background-repeat: repeat;
+  }
+  .glass-emerald {
+    background: rgba(0, 77, 56, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0, 106, 78, 0.2); border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0, 106, 78, 0.4); }
+::-webkit-scrollbar-thumb { background: rgba(0, 77, 56, 0.2); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
 
 /* Range inputs */
 input[type="range"] {
@@ -90,17 +114,9 @@ input[type="range"] {
   cursor: pointer; height: 4px; border: none; padding: 0; box-shadow: none;
 }
 input[type="range"]::-webkit-slider-thumb {
-  appearance: none; width: 16px; height: 16px; background: var(--color-primary);
+  appearance: none; width: 16px; height: 16px; background: var(--color-accent);
   border-radius: 9999px; cursor: pointer; margin-top: -6px;
-  box-shadow: 0 2px 6px rgba(0, 106, 78, 0.3);
+  box-shadow: 0 2px 6px rgba(197, 150, 58, 0.3);
 }
 input[type="range"]:focus { box-shadow: none; outline: none; }
 
-/* Dark mode transitions */
-.dark .card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-.dark .card:hover {
-  border-color: rgba(0, 106, 78, 0.4);
-  box-shadow: 0 4px 20px rgba(0, 106, 78, 0.08);
-}
