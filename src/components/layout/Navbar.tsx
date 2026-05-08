@@ -5,14 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { cn } from "@/utils/utils";
-import { Moon, Sun, Settings, BookOpen, Search, Bookmark, GraduationCap, Heart, Menu, X, Clock } from "lucide-react";
+import { Moon, Sun, Settings, BookOpen, Search, Bookmark, GraduationCap, Heart, Menu, X, Clock, Compass } from "lucide-react";
 
 const navItems = [
   { name: "Home", href: "/", icon: BookOpen },
   { name: "Read Quran", href: "/surah/1", icon: BookOpen },
+  { name: "Discover", href: "/discover", icon: Compass },
   { name: "Prayer Times", href: "/prayer-times", icon: Clock },
   { name: "Search", href: "/search", icon: Search },
-  { name: "Learn", href: "/learn", icon: GraduationCap },
 ];
 
 export default function Navbar() {
