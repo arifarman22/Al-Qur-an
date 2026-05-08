@@ -12,9 +12,9 @@
   --color-muted: var(--muted-color);
   --color-background: var(--bg);
   --color-foreground: var(--fg);
-  --font-sans: var(--font-inter), var(--font-kalpurush), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-arabic: var(--font-amiri), serif;
-  --font-bengali: var(--font-kalpurush), sans-serif;
+  --font-bengali: var(--font-bengali), sans-serif;
 }
 
 :root {
